@@ -1,7 +1,6 @@
 package frc.robot.controllers;
 
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import frc.robot.Constants;
 
 public class TankDriveController {
 
