@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController xboxController = new CommandXboxController(Constants.TANK_JOYSTICK_AXIS);
+  private final CommandXboxController xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_USB_PORT);
   private final CommandJoystick leftJoystick = new CommandJoystick(Constants.LEFT_TANK_JOYSTICK_USB_PORT);
   private final CommandJoystick rightJoystick = new CommandJoystick(Constants.RIGHT_TANK_JOYSTICK_USB_PORT);
   private final TankDriveController tankDriveController = new TankDriveController(leftJoystick, rightJoystick);
