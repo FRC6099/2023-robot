@@ -4,11 +4,11 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
+import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TankDrive;
 import frc.robot.controllers.TankDriveController;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,9 +33,11 @@ public class RobotContainer {
 
 
   // The robot's subsystems and commands are defined here...
+  private final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
   private final DriveTrain driveTrain = new DriveTrain();
 
   // Command Classes
+  private final ExampleCommand exampleCommand = new ExampleCommand(exampleSubsystem);
   private final TankDrive tankDrive = new TankDrive(driveTrain, tankDriveController);
 
   // Add ability to choose autonomous mode in SmartDashboard
@@ -79,7 +81,7 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    //xboxController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    xboxController.b().whileTrue(exampleSubsystem.exampleMethodCommand());
   }
 
   /**

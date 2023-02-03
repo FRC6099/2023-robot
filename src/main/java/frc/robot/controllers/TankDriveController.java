@@ -14,11 +14,11 @@ public class TankDriveController {
     }
 
     public double getLeftPosition() {
-        return leftJoystick.getRawAxis(Constants.TANK_JOYSTICK_AXIS) * -1.0;
+        return leftJoystick.getY() * -1.0;
     }
 
     public double getRightPosition() {
-        return rightJoystick.getRawAxis(Constants.TANK_JOYSTICK_AXIS) * -1.0;
+        return rightJoystick.getY() * -1.0;
     }
     
 }
