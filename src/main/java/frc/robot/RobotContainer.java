@@ -30,6 +30,17 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    configureSubsystems();
+  }
+
+  /**
+   * Used to configure Subsystem::setDefaultCommand. This will schedule a Command until 
+   * another Command takes over from configureBindings() method which requires 
+   * the Subsystem.
+   * Default commands are best used for non-button input or setting default behavior.
+   */
+  private void configureSubsystems() {
+    // this.mySubsystem.setDefaultCommand(myCommand);
   }
 
   /**
