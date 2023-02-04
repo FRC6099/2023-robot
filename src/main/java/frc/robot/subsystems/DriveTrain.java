@@ -12,10 +12,10 @@ import frc.robot.Constants;
 
 public class DriveTrain extends SubsystemBase {
 
-  private final WPI_VictorSPX leftFrontMotor = new WPI_VictorSPX (Constants.LEFT_FRONT_DRIVE_MOTOR_CAN_ID);
-  private final WPI_VictorSPX rightFrontMotor = new WPI_VictorSPX (Constants.RIGHT_FRONT_DRIVE_MOTOR_CAN_ID);
-  private final WPI_VictorSPX leftRearMotor = new WPI_VictorSPX (Constants.LEFT_REAR_DRIVE_MOTOR_CAN_ID);
-  private final WPI_VictorSPX rightRearMotor = new WPI_VictorSPX (Constants.RIGHT_REAR_DRIVE_MOTOR_CAN_ID);
+  private final WPI_VictorSPX leftFrontMotor = new WPI_VictorSPX(Constants.LEFT_FRONT_DRIVE_MOTOR_CAN_ID);
+  private final WPI_VictorSPX rightFrontMotor = new WPI_VictorSPX(Constants.RIGHT_FRONT_DRIVE_MOTOR_CAN_ID);
+  private final WPI_VictorSPX leftRearMotor = new WPI_VictorSPX(Constants.LEFT_REAR_DRIVE_MOTOR_CAN_ID);
+  private final WPI_VictorSPX rightRearMotor = new WPI_VictorSPX(Constants.RIGHT_REAR_DRIVE_MOTOR_CAN_ID);
 
 
   /** Creates a new DriveTrain. */
