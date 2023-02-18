@@ -17,8 +17,10 @@ public class ArmPosition {
     private ArmAngles armAngles;
 
     public ArmPosition(double x, double y, ArmAngles armAngles) {
-        this.x = x;
-        this.y = y;
+        this.x = 0.0;
+        this.y = 0.0;
+        this.addX(x);
+        this.addY(y);
         this.armAngles = armAngles;
     }
 

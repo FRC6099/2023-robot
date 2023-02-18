@@ -119,6 +119,14 @@ public class Arm extends SubsystemBase {
     setArmAngles(angles);
   }
 
+  public void goToPosition(double x, double y) {
+    ArmPosition position = new ArmPosition(x, y, null);
+    ArmAngles angles = getArmAngles(position);
+    ArmPosition currentPosition = getCurrentPosition();
+    System.out.println(currentPosition.getX() + "|" + currentPosition.getY() + "|" + x + "|" + y + "|" + angles.getLowerAngle() + "|" + angles.getLowerAngle());
+    setArmAngles(angles);
+  }
+
   public void setArmAngles(ArmAngles angles) {
     setArmAngles(angles.getLowerAngle(), angles.getUpperAngle());
   }
