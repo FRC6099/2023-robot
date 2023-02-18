@@ -22,8 +22,6 @@ public class Arm extends SubsystemBase {
   private static int PID_LOOP_INDEX = 0;
   private static double LOWER_ARM_LENGTH = 36.0;           // INCHES
   private static double UPPER_ARM_LENGTH = 43.75;          // INCHES
-  private static double MAX_HORIZONTAL_REACH = 48.0;       // INCHES
-  private static double MAX_VERTICAL_REACH = 76.0;         // INCHES
   private static double ARM_TICKS_PER_REVOLUTION = 4096;
 
   private final TalonSRX lowerArm = new WPI_TalonSRX(0);
@@ -100,13 +98,32 @@ public class Arm extends SubsystemBase {
     // GET current X and Y
     ArmPosition pos = getPosition();
     // Check Boundaries & Adjust X, Y to min or max depending
+    double startX = pos.getX();
+    double startY = pos.getY();
     pos.addX(x);
     pos.addY(y);
 
     // Calculate Arm Angles
     ArmAngles angles = getArmAngles(pos);
 
-    System.out.println("Start X: " + (pos.getX()-x) + "; Start Y: " + (pos.getY()-y) + "; X: " + pos.getX() + "; Y: " + pos.getY() + "; lower: " + angles.getLowerAngle() + "; upper: " + angles.getUpperAngle());
+    // System.out.println("Start X: " + (pos.getX()-x) + 
+    //         "; Start Y: " + (pos.getY()-y) + 
+    //         "; X: " + pos.getX() + 
+    //         "; Y: " + pos.getY() + 
+    //         "; Start lower: " + pos.getArmAngles().getLowerAngle() + 
+    //         "; Start upper: " + pos.getArmAngles().getUpperAngle() +
+    //         "; lower: " + angles.getLowerAngle() + 
+    //         "; upper: " + angles.getUpperAngle()
+    //         );
+    System.out.println(startX + 
+            "|" + startY + 
+            "|" + pos.getX() + 
+            "|" + pos.getY() + 
+            "|" + pos.getArmAngles().getLowerAngle() + 
+            "|" + pos.getArmAngles().getUpperAngle() +
+            "|" + angles.getLowerAngle() + 
+            "|" + angles.getUpperAngle()
+            );
 
     // Set Angles
     lowerArm.set(ControlMode.MotionMagic, angles.getLowerAngle() * ARM_TICKS_PER_REVOLUTION / 360.0);
@@ -123,9 +140,9 @@ public class Arm extends SubsystemBase {
     double upperArmAngle = upperArm.getSelectedSensorPosition(PID_LOOP_INDEX) / ARM_TICKS_PER_REVOLUTION * 360;
     // System.out.println("L: " + lowerArmAngle + "; U: " + upperArmAngle);
 
-    if (upperArmAngle == 0.0 && lowerArmAngle == 0.0) {
-      return new ArmPosition(0.0, 0.0);
-    }
+    // if (upperArmAngle == 0.0 && lowerArmAngle == 0.0) {
+    //   return new ArmPosition(0.0, 0.0, new ArmAngles(0.0, 0.0));
+    // }
 
     // lengthC = (A^2 + B^2 - 2AB * cos(c))^1/2
     double lengthC = Math.sqrt(Math.pow(LOWER_ARM_LENGTH, 2) + Math.pow(UPPER_ARM_LENGTH, 2) - 2 * LOWER_ARM_LENGTH * UPPER_ARM_LENGTH * Math.cos(Math.toRadians(upperArmAngle)));
@@ -144,7 +161,7 @@ public class Arm extends SubsystemBase {
     // System.out.println("X: " + lengthX);
     // System.out.println("Y: " + lengthY);
 
-    return new ArmPosition(lengthX, lengthY);
+    return new ArmPosition(lengthX, lengthY, new ArmAngles(lowerArmAngle, upperArmAngle));
   }
   
   private ArmAngles getArmAngles(ArmPosition position) {

@@ -28,16 +28,16 @@ public class OperateArm extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double changeInX = controller.getLeftPosition() * 2.0;
-    double changeInY = controller.getRightPosition() * 2.0;
+    double changeInX = controller.getLeftPosition();
+    double changeInY = controller.getRightPosition();
 
-    if (Math.abs(changeInX/2) < 0.10) { changeInX = 0; } /* deadband 10% */
-		if (Math.abs(changeInY/2) < 0.10) { changeInY = 0; } /* deadband 10% */
+    if (Math.abs(changeInX) < 0.10) { changeInX = 0; } /* deadband 10% */
+		if (Math.abs(changeInY) < 0.10) { changeInY = 0; } /* deadband 10% */
 
     if (changeInX == 0 && changeInY == 0) {
       arm.stop();
     } else {
-      arm.addPosition(changeInX, changeInY);
+      arm.addPosition(changeInX*10.0, changeInY*10.0);
     }
   }
 

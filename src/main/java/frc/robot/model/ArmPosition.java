@@ -12,10 +12,12 @@ public class ArmPosition {
 
     private double x;
     private double y;
+    private ArmAngles armAngles;
 
-    public ArmPosition(double x, double y) {
+    public ArmPosition(double x, double y, ArmAngles armAngles) {
         this.x = x;
         this.y = y;
+        this.armAngles = armAngles;
     }
 
     public double getX() {
@@ -32,6 +34,10 @@ public class ArmPosition {
 
     public void addY(double y) {
         this.y = getLimitedValue(this.y, y, MAX_VERTICAL_REACH);
+    }
+
+    public ArmAngles getArmAngles() {
+        return armAngles;
     }
 
     private double getLimitedValue(double val, double addedVal, double max) {
