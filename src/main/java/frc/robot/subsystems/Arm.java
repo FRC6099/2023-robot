@@ -27,6 +27,11 @@ public class Arm extends SubsystemBase {
   private final TalonSRX lowerArm = new WPI_TalonSRX(0);
   private final TalonSRX upperArm = new WPI_TalonSRX(1);
 
+  private double lastSetXPosition = -1.0;
+  private double lastSetYPosition = -1.0;
+  private boolean isStopped = true;
+
+
   /** Creates a new Arm. */
   public Arm() {
     this.configureArm(lowerArm, 110.0);
@@ -76,6 +81,10 @@ public class Arm extends SubsystemBase {
 		/* Zero the sensor once on robot boot up */
     double angleTicks = angle * ARM_TICKS_PER_REVOLUTION / 360.0;
 		arm.setSelectedSensorPosition(angleTicks, PID_LOOP_INDEX, TIMEOUT_MS);
+
+    ArmPosition pos = getPosition();
+    this.lastSetXPosition = pos.getX();
+    this.lastSetYPosition = pos.getY();
   }
 
   public void simulationInit() {
@@ -100,25 +109,46 @@ public class Arm extends SubsystemBase {
     // Check Boundaries & Adjust X, Y to min or max depending
     double startX = pos.getX();
     double startY = pos.getY();
-    pos.addX(x);
-    pos.addY(y);
+
+    if (isStopped) {
+      isStopped = false;
+      lastSetXPosition = startX;
+      lastSetYPosition = startY;
+    }
+
+    if (Math.abs(lastSetXPosition - startX) < 3.0 && x!=0.0) {
+      pos.addX(x);
+      lastSetXPosition = pos.getX();
+    } else {
+      pos.setX(lastSetXPosition);
+    }
+    if (Math.abs(lastSetYPosition - startY) < 3.0 && y!=0.0) {
+      pos.addY(y);
+      lastSetYPosition = pos.getY();
+    } else {
+      pos.setY(lastSetYPosition);
+    }
 
     // Calculate Arm Angles
     ArmAngles angles = getArmAngles(pos);
 
     // System.out.println("Start X: " + (pos.getX()-x) + 
     //         "; Start Y: " + (pos.getY()-y) + 
-    //         "; X: " + pos.getX() + 
-    //         "; Y: " + pos.getY() + 
+    //         "; Next X: " + pos.getX() + 
+    //         "; Next Y: " + pos.getY() + 
+    //         "; Set X: " + lastSetXPosition + 
+    //         "; Set Y: " + lastSetYPosition + 
     //         "; Start lower: " + pos.getArmAngles().getLowerAngle() + 
     //         "; Start upper: " + pos.getArmAngles().getUpperAngle() +
-    //         "; lower: " + angles.getLowerAngle() + 
-    //         "; upper: " + angles.getUpperAngle()
+    //         "; Next lower: " + angles.getLowerAngle() + 
+    //         "; Next upper: " + angles.getUpperAngle()
     //         );
     System.out.println(startX + 
             "|" + startY + 
             "|" + pos.getX() + 
             "|" + pos.getY() + 
+            "|" + lastSetXPosition + 
+            "|" + lastSetYPosition + 
             "|" + pos.getArmAngles().getLowerAngle() + 
             "|" + pos.getArmAngles().getUpperAngle() +
             "|" + angles.getLowerAngle() + 
@@ -133,6 +163,7 @@ public class Arm extends SubsystemBase {
   public void stop() {
     lowerArm.set(ControlMode.PercentOutput, 0.0);
     upperArm.set(ControlMode.PercentOutput, 0.0);
+    isStopped = true;
   }
 
   private ArmPosition getPosition() {
