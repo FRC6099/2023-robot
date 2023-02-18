@@ -11,6 +11,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.model.ArmAngles;
+import frc.robot.model.ArmPosition;
 import frc.robot.sim.PhysicsSim;
 
 public class Arm extends SubsystemBase {
@@ -18,17 +20,22 @@ public class Arm extends SubsystemBase {
   private static int TIMEOUT_MS = 30;
   private static int GAIN_PID = 0;
   private static int PID_LOOP_INDEX = 0;
+  private static double LOWER_ARM_LENGTH = 36.0;           // INCHES
+  private static double UPPER_ARM_LENGTH = 43.75;          // INCHES
+  private static double MAX_HORIZONTAL_REACH = 48.0;       // INCHES
+  private static double MAX_VERTICAL_REACH = 76.0;         // INCHES
+  private static double ARM_TICKS_PER_REVOLUTION = 4096;
 
   private final TalonSRX lowerArm = new WPI_TalonSRX(0);
   private final TalonSRX upperArm = new WPI_TalonSRX(1);
 
   /** Creates a new Arm. */
   public Arm() {
-    this.configureArm(lowerArm);
-    this.configureArm(upperArm);
+    this.configureArm(lowerArm, 110.0);
+    this.configureArm(upperArm, 30.0);
   }
 
-  private void configureArm(TalonSRX arm) {
+  private void configureArm(TalonSRX arm, double angle) {
     /* Factory default hardware to prevent unexpected behavior */
 		arm.configFactoryDefault();
 
@@ -69,10 +76,12 @@ public class Arm extends SubsystemBase {
 		arm.configMotionAcceleration(300, TIMEOUT_MS);            // SET THIS FOR MAX MOTOR ACCELERATION
 
 		/* Zero the sensor once on robot boot up */
-		arm.setSelectedSensorPosition(0, PID_LOOP_INDEX, TIMEOUT_MS);
+    double angleTicks = angle * ARM_TICKS_PER_REVOLUTION / 360.0;
+		arm.setSelectedSensorPosition(angleTicks, PID_LOOP_INDEX, TIMEOUT_MS);
   }
 
   public void simulationInit() {
+    System.out.print("Simulate Init for Arm");
     PhysicsSim.getInstance().addTalonSRX(lowerArm, 1.0, 8192, false);
     PhysicsSim.getInstance().addTalonSRX(upperArm, 1.0, 8192, false);
   }
@@ -89,13 +98,64 @@ public class Arm extends SubsystemBase {
 
   public void addPosition(double x, double y) {
     // GET current X and Y
+    ArmPosition pos = getPosition();
     // Check Boundaries & Adjust X, Y to min or max depending
+    pos.addX(x);
+    pos.addY(y);
+
     // Calculate Arm Angles
+    ArmAngles angles = getArmAngles(pos);
+
+    System.out.println("Start X: " + (pos.getX()-x) + "; Start Y: " + (pos.getY()-y) + "; X: " + pos.getX() + "; Y: " + pos.getY() + "; lower: " + angles.getLowerAngle() + "; upper: " + angles.getUpperAngle());
+
     // Set Angles
+    lowerArm.set(ControlMode.MotionMagic, angles.getLowerAngle() * ARM_TICKS_PER_REVOLUTION / 360.0);
+    upperArm.set(ControlMode.MotionMagic, angles.getUpperAngle() * ARM_TICKS_PER_REVOLUTION / 360.0);
   }
 
   public void stop() {
     lowerArm.set(ControlMode.PercentOutput, 0.0);
     upperArm.set(ControlMode.PercentOutput, 0.0);
+  }
+
+  private ArmPosition getPosition() {
+    double lowerArmAngle = lowerArm.getSelectedSensorPosition(PID_LOOP_INDEX) / ARM_TICKS_PER_REVOLUTION * 360;
+    double upperArmAngle = upperArm.getSelectedSensorPosition(PID_LOOP_INDEX) / ARM_TICKS_PER_REVOLUTION * 360;
+    // System.out.println("L: " + lowerArmAngle + "; U: " + upperArmAngle);
+
+    if (upperArmAngle == 0.0 && lowerArmAngle == 0.0) {
+      return new ArmPosition(0.0, 0.0);
+    }
+
+    // lengthC = (A^2 + B^2 - 2AB * cos(c))^1/2
+    double lengthC = Math.sqrt(Math.pow(LOWER_ARM_LENGTH, 2) + Math.pow(UPPER_ARM_LENGTH, 2) - 2 * LOWER_ARM_LENGTH * UPPER_ARM_LENGTH * Math.cos(Math.toRadians(upperArmAngle)));
+    // angleB = arccos((C^2 + A^2 - B^2) / (2AC))
+    double angleB = Math.toDegrees(Math.acos((Math.pow(lengthC, 2) + Math.pow(LOWER_ARM_LENGTH, 2) - Math.pow(UPPER_ARM_LENGTH, 2)) / (2 * LOWER_ARM_LENGTH * lengthC)));
+    double angleY = lowerArmAngle - angleB;
+    double angleX = 90.0 - angleY;
+    double lengthX = lengthC / Math.sin(Math.toRadians(90.0)) * Math.sin(Math.toRadians(angleX));
+    double lengthY = lengthC / Math.sin(Math.toRadians(90.0)) * Math.sin(Math.toRadians(angleY));
+
+
+    // System.out.println("C: " + lengthC);
+    // System.out.println("b: " + angleB);
+    // System.out.println("x: " + angleX);
+    // System.out.println("y: " + angleY);
+    // System.out.println("X: " + lengthX);
+    // System.out.println("Y: " + lengthY);
+
+    return new ArmPosition(lengthX, lengthY);
+  }
+  
+  private ArmAngles getArmAngles(ArmPosition position) {
+    double lengthC = Math.sqrt(Math.pow(position.getX(), 2) + Math.pow(position.getY(), 2));
+    // double angleA = Math.toDegrees(Math.acos((Math.pow(UPPER_ARM_LENGTH, 2) + Math.pow(lengthC, 2) - Math.pow(LOWER_ARM_LENGTH, 2)) / (2 * UPPER_ARM_LENGTH * lengthC)));
+    double angleB = Math.toDegrees(Math.acos((Math.pow(LOWER_ARM_LENGTH, 2) + Math.pow(lengthC, 2) - Math.pow(UPPER_ARM_LENGTH, 2)) / (2 * LOWER_ARM_LENGTH * lengthC)));
+    double angleC = Math.toDegrees(Math.acos((Math.pow(LOWER_ARM_LENGTH, 2) + Math.pow(UPPER_ARM_LENGTH, 2) - Math.pow(lengthC, 2)) / (2 * LOWER_ARM_LENGTH * UPPER_ARM_LENGTH)));
+    double angleD = Math.toDegrees(Math.acos(position.getX() / lengthC));
+    double angleR = angleB + angleD;
+
+    // Angle A, B, C should equal 180
+    return new ArmAngles(angleR, angleC);
   }
 }
