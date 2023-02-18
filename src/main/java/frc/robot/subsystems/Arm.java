@@ -81,10 +81,6 @@ public class Arm extends SubsystemBase {
 		/* Zero the sensor once on robot boot up */
     double angleTicks = angle * ARM_TICKS_PER_REVOLUTION / 360.0;
 		arm.setSelectedSensorPosition(angleTicks, PID_LOOP_INDEX, TIMEOUT_MS);
-
-    ArmPosition pos = getPosition();
-    this.lastSetXPosition = pos.getX();
-    this.lastSetYPosition = pos.getY();
   }
 
   public void simulationInit() {
@@ -169,11 +165,6 @@ public class Arm extends SubsystemBase {
   private ArmPosition getPosition() {
     double lowerArmAngle = lowerArm.getSelectedSensorPosition(PID_LOOP_INDEX) / ARM_TICKS_PER_REVOLUTION * 360;
     double upperArmAngle = upperArm.getSelectedSensorPosition(PID_LOOP_INDEX) / ARM_TICKS_PER_REVOLUTION * 360;
-    // System.out.println("L: " + lowerArmAngle + "; U: " + upperArmAngle);
-
-    // if (upperArmAngle == 0.0 && lowerArmAngle == 0.0) {
-    //   return new ArmPosition(0.0, 0.0, new ArmAngles(0.0, 0.0));
-    // }
 
     // lengthC = (A^2 + B^2 - 2AB * cos(c))^1/2
     double lengthC = Math.sqrt(Math.pow(LOWER_ARM_LENGTH, 2) + Math.pow(UPPER_ARM_LENGTH, 2) - 2 * LOWER_ARM_LENGTH * UPPER_ARM_LENGTH * Math.cos(Math.toRadians(upperArmAngle)));
@@ -183,14 +174,6 @@ public class Arm extends SubsystemBase {
     double angleX = 90.0 - angleY;
     double lengthX = lengthC / Math.sin(Math.toRadians(90.0)) * Math.sin(Math.toRadians(angleX));
     double lengthY = lengthC / Math.sin(Math.toRadians(90.0)) * Math.sin(Math.toRadians(angleY));
-
-
-    // System.out.println("C: " + lengthC);
-    // System.out.println("b: " + angleB);
-    // System.out.println("x: " + angleX);
-    // System.out.println("y: " + angleY);
-    // System.out.println("X: " + lengthX);
-    // System.out.println("Y: " + lengthY);
 
     return new ArmPosition(lengthX, lengthY, new ArmAngles(lowerArmAngle, upperArmAngle));
   }
