@@ -9,6 +9,8 @@ public class ArmPosition {
 
     private static final double MAX_HORIZONTAL_REACH = 48.0;       // INCHES
     private static final double MAX_VERTICAL_REACH = 76.0;         // INCHES
+    private static final double MIN_HORIZONTAL_REACH = 12.0;       // INCHES
+    private static final double MIN_VERTICAL_REACH = -12.0;        // INCHES
 
     private double x;
     private double y;
@@ -37,23 +39,23 @@ public class ArmPosition {
     }
 
     public void addX(double x) {
-        this.x = getLimitedValue(this.x, x, MAX_HORIZONTAL_REACH);
+        this.x = getLimitedValue(this.x, x, MAX_HORIZONTAL_REACH, MIN_HORIZONTAL_REACH);
     }
 
     public void addY(double y) {
-        this.y = getLimitedValue(this.y, y, MAX_VERTICAL_REACH);
+        this.y = getLimitedValue(this.y, y, MAX_VERTICAL_REACH, MIN_VERTICAL_REACH);
     }
 
     public ArmAngles getArmAngles() {
         return armAngles;
     }
 
-    private double getLimitedValue(double val, double addedVal, double max) {
+    private double getLimitedValue(double val, double addedVal, double max, double min) {
         if (val + addedVal > max) {
             return max;
         }
-        if (val + addedVal < 0.0) {
-            return 0.0;
+        if (val + addedVal < min) {
+            return min;
         }
         return val + addedVal;
     }

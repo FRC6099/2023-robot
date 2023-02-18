@@ -201,6 +201,10 @@ public class Arm extends SubsystemBase {
     double angleB = Math.toDegrees(Math.acos((Math.pow(LOWER_ARM_LENGTH, 2) + Math.pow(lengthC, 2) - Math.pow(UPPER_ARM_LENGTH, 2)) / (2 * LOWER_ARM_LENGTH * lengthC)));
     double angleC = Math.toDegrees(Math.acos((Math.pow(LOWER_ARM_LENGTH, 2) + Math.pow(UPPER_ARM_LENGTH, 2) - Math.pow(lengthC, 2)) / (2 * LOWER_ARM_LENGTH * UPPER_ARM_LENGTH)));
     double angleD = Math.toDegrees(Math.acos(position.getX() / lengthC));
+
+    if (position.getY() < 0.0) {
+      angleD = angleD * -1.0;
+    }
     double angleR = angleB + angleD;
 
     // Angle A, B, C should equal 180
