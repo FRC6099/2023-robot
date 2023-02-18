@@ -23,6 +23,8 @@ public class Arm extends SubsystemBase {
   private static double LOWER_ARM_LENGTH = 36.0;           // INCHES
   private static double UPPER_ARM_LENGTH = 43.75;          // INCHES
   private static double ARM_TICKS_PER_REVOLUTION = 4096;
+  private static double LOWER_MOTOR_REV_TO_ARM_REV = 125.0 / 1.0 * 60.0 / 18.0;   // 125:1, 60:18
+  private static double UPPER_MOTOR_REV_TO_ARM_REV = 100.0 / 1.0 * 60.0 / 18.0;   // 100:1, 60:18
 
   private final TalonSRX lowerArm = new WPI_TalonSRX(0);
   private final TalonSRX upperArm = new WPI_TalonSRX(1);
@@ -34,11 +36,11 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-    this.configureArm(lowerArm, 110.0);
-    this.configureArm(upperArm, 30.0);
+    this.configureArm(lowerArm, 110.0, LOWER_MOTOR_REV_TO_ARM_REV);
+    this.configureArm(upperArm, 30.0, UPPER_MOTOR_REV_TO_ARM_REV);
   }
 
-  private void configureArm(TalonSRX arm, double angle) {
+  private void configureArm(TalonSRX arm, double angle, double turnRatio) {
     /* Factory default hardware to prevent unexpected behavior */
 		arm.configFactoryDefault();
 
@@ -75,11 +77,11 @@ public class Arm extends SubsystemBase {
 		arm.config_kD(GAIN_PID, 0.0, TIMEOUT_MS);
 
 		/* Set acceleration and vcruise velocity - see documentation */
-		arm.configMotionCruiseVelocity(7, TIMEOUT_MS);                  // SET THIS FOR MAX MOTOR SPEED
-		arm.configMotionAcceleration(300, TIMEOUT_MS);            // SET THIS FOR MAX MOTOR ACCELERATION
+		arm.configMotionCruiseVelocity(4740 * 30, TIMEOUT_MS);                  // SET THIS FOR MAX MOTOR SPEED
+		arm.configMotionAcceleration(4096, TIMEOUT_MS);            // SET THIS FOR MAX MOTOR ACCELERATION
 
 		/* Zero the sensor once on robot boot up */
-    double angleTicks = angle * ARM_TICKS_PER_REVOLUTION / 360.0;
+    double angleTicks = angle * ARM_TICKS_PER_REVOLUTION / 360.0 * turnRatio;
 		arm.setSelectedSensorPosition(angleTicks, PID_LOOP_INDEX, TIMEOUT_MS);
 
     ArmPosition pos = getCurrentPosition();
@@ -132,8 +134,8 @@ public class Arm extends SubsystemBase {
   }
 
   public void setArmAngles(double lowerDegrees, double upperDegrees) {
-    double lowerTicks = lowerDegrees * ARM_TICKS_PER_REVOLUTION / 360.0;
-    double upperTicks = upperDegrees * ARM_TICKS_PER_REVOLUTION / 360.0;
+    double lowerTicks = lowerDegrees * ARM_TICKS_PER_REVOLUTION / 360.0 * LOWER_MOTOR_REV_TO_ARM_REV;
+    double upperTicks = upperDegrees * ARM_TICKS_PER_REVOLUTION / 360.0 * UPPER_MOTOR_REV_TO_ARM_REV;
     lowerArm.set(ControlMode.MotionMagic, lowerTicks);
     upperArm.set(ControlMode.MotionMagic, upperTicks);
   }
@@ -145,8 +147,8 @@ public class Arm extends SubsystemBase {
   }
 
   private ArmPosition getCurrentPosition() {
-    double lowerArmAngle = lowerArm.getSelectedSensorPosition(PID_LOOP_INDEX) / ARM_TICKS_PER_REVOLUTION * 360;
-    double upperArmAngle = upperArm.getSelectedSensorPosition(PID_LOOP_INDEX) / ARM_TICKS_PER_REVOLUTION * 360;
+    double lowerArmAngle = lowerArm.getSelectedSensorPosition(PID_LOOP_INDEX) / ARM_TICKS_PER_REVOLUTION * 360 / LOWER_MOTOR_REV_TO_ARM_REV;
+    double upperArmAngle = upperArm.getSelectedSensorPosition(PID_LOOP_INDEX) / ARM_TICKS_PER_REVOLUTION * 360 / UPPER_MOTOR_REV_TO_ARM_REV;
 
     // lengthC = (A^2 + B^2 - 2AB * cos(c))^1/2
     double lengthC = Math.sqrt(Math.pow(LOWER_ARM_LENGTH, 2) + Math.pow(UPPER_ARM_LENGTH, 2) - 2 * LOWER_ARM_LENGTH * UPPER_ARM_LENGTH * Math.cos(Math.toRadians(upperArmAngle)));
