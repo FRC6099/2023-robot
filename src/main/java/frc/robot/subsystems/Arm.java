@@ -82,7 +82,7 @@ public class Arm extends SubsystemBase {
     double angleTicks = angle * ARM_TICKS_PER_REVOLUTION / 360.0;
 		arm.setSelectedSensorPosition(angleTicks, PID_LOOP_INDEX, TIMEOUT_MS);
 
-    ArmPosition pos = getPosition();
+    ArmPosition pos = getCurrentPosition();
     this.lastSetXPosition = pos.getX();
     this.lastSetYPosition = pos.getY();
   }
@@ -105,10 +105,56 @@ public class Arm extends SubsystemBase {
 
   public void addPosition(double x, double y) {
     // GET current X and Y
-    ArmPosition pos = getPosition();
+    ArmPosition position = getCurrentPosition();
+    double startX = position.getX();
+    double startY = position.getY();
     // Check Boundaries & Adjust X, Y to min or max depending
-    double startX = pos.getX();
-    double startY = pos.getY();
+    updatePositionToNext(x, y, position);
+
+    // Calculate Arm Angles
+    ArmAngles angles = getArmAngles(position);
+    printStats(position, startX, startY, angles);
+
+    // Set Angles
+    setArmAngles(angles);
+  }
+
+  public void setArmAngles(ArmAngles angles) {
+    setArmAngles(angles.getLowerAngle(), angles.getUpperAngle());
+  }
+
+  public void setArmAngles(double lowerDegrees, double upperDegrees) {
+    double lowerTicks = lowerDegrees * ARM_TICKS_PER_REVOLUTION / 360.0;
+    double upperTicks = upperDegrees * ARM_TICKS_PER_REVOLUTION / 360.0;
+    lowerArm.set(ControlMode.MotionMagic, lowerTicks);
+    upperArm.set(ControlMode.MotionMagic, upperTicks);
+  }
+
+  public void stop() {
+    lowerArm.set(ControlMode.PercentOutput, 0.0);
+    upperArm.set(ControlMode.PercentOutput, 0.0);
+    isStopped = true;
+  }
+
+  private ArmPosition getCurrentPosition() {
+    double lowerArmAngle = lowerArm.getSelectedSensorPosition(PID_LOOP_INDEX) / ARM_TICKS_PER_REVOLUTION * 360;
+    double upperArmAngle = upperArm.getSelectedSensorPosition(PID_LOOP_INDEX) / ARM_TICKS_PER_REVOLUTION * 360;
+
+    // lengthC = (A^2 + B^2 - 2AB * cos(c))^1/2
+    double lengthC = Math.sqrt(Math.pow(LOWER_ARM_LENGTH, 2) + Math.pow(UPPER_ARM_LENGTH, 2) - 2 * LOWER_ARM_LENGTH * UPPER_ARM_LENGTH * Math.cos(Math.toRadians(upperArmAngle)));
+    // angleB = arccos((C^2 + A^2 - B^2) / (2AC))
+    double angleB = Math.toDegrees(Math.acos((Math.pow(lengthC, 2) + Math.pow(LOWER_ARM_LENGTH, 2) - Math.pow(UPPER_ARM_LENGTH, 2)) / (2 * LOWER_ARM_LENGTH * lengthC)));
+    double angleY = lowerArmAngle - angleB;
+    double angleX = 90.0 - angleY;
+    double lengthX = lengthC / Math.sin(Math.toRadians(90.0)) * Math.sin(Math.toRadians(angleX));
+    double lengthY = lengthC / Math.sin(Math.toRadians(90.0)) * Math.sin(Math.toRadians(angleY));
+
+    return new ArmPosition(lengthX, lengthY, new ArmAngles(lowerArmAngle, upperArmAngle));
+  }
+
+  private void updatePositionToNext(double x, double y, ArmPosition position) {
+    double startX = position.getX();
+    double startY = position.getY();
 
     if (isStopped) {
       isStopped = false;
@@ -117,21 +163,49 @@ public class Arm extends SubsystemBase {
     }
 
     if (Math.abs(lastSetXPosition - startX) < 3.0 && x!=0.0) {
-      pos.addX(x);
-      lastSetXPosition = pos.getX();
+      position.addX(x);
+      lastSetXPosition = position.getX();
     } else {
-      pos.setX(lastSetXPosition);
+      position.setX(lastSetXPosition);
     }
     if (Math.abs(lastSetYPosition - startY) < 3.0 && y!=0.0) {
-      pos.addY(y);
-      lastSetYPosition = pos.getY();
+      position.addY(y);
+      lastSetYPosition = position.getY();
     } else {
-      pos.setY(lastSetYPosition);
+      position.setY(lastSetYPosition);
     }
+  }
+  
+  //                       U  L
+  //                     U  c
+  //                   U      L
+  //             B  U           A
+  //              U
+  //           U              L
+  //         U 
+  //       *   a                
+  //       * f  *              L
+  // D = Y *      C   *      b  
+  //       * e            d* r L
+  //       * * * * * * * * * * *
+  //                F = X
+  private ArmAngles getArmAngles(ArmPosition position) {
+    double lengthC = Math.sqrt(Math.pow(position.getX(), 2) + Math.pow(position.getY(), 2));
+    // double angleA = Math.toDegrees(Math.acos((Math.pow(UPPER_ARM_LENGTH, 2) + Math.pow(lengthC, 2) - Math.pow(LOWER_ARM_LENGTH, 2)) / (2 * UPPER_ARM_LENGTH * lengthC)));
+    double angleB = Math.toDegrees(Math.acos((Math.pow(LOWER_ARM_LENGTH, 2) + Math.pow(lengthC, 2) - Math.pow(UPPER_ARM_LENGTH, 2)) / (2 * LOWER_ARM_LENGTH * lengthC)));
+    double angleC = Math.toDegrees(Math.acos((Math.pow(LOWER_ARM_LENGTH, 2) + Math.pow(UPPER_ARM_LENGTH, 2) - Math.pow(lengthC, 2)) / (2 * LOWER_ARM_LENGTH * UPPER_ARM_LENGTH)));
+    double angleD = Math.toDegrees(Math.acos(position.getX() / lengthC));
 
-    // Calculate Arm Angles
-    ArmAngles angles = getArmAngles(pos);
+    if (position.getY() < 0.0) {
+      angleD = angleD * -1.0;
+    }
+    double angleR = angleB + angleD;
 
+    // Angle A, B, C should equal 180
+    return new ArmAngles(angleR, angleC);
+  }
+
+  private void printStats(ArmPosition pos, double startX, double startY, ArmAngles angles) {
     // System.out.println("Start X: " + (pos.getX()-x) + 
     //         "; Start Y: " + (pos.getY()-y) + 
     //         "; Next X: " + pos.getX() + 
@@ -154,60 +228,5 @@ public class Arm extends SubsystemBase {
             "|" + angles.getLowerAngle() + 
             "|" + angles.getUpperAngle()
             );
-
-    // Set Angles
-    lowerArm.set(ControlMode.MotionMagic, angles.getLowerAngle() * ARM_TICKS_PER_REVOLUTION / 360.0);
-    upperArm.set(ControlMode.MotionMagic, angles.getUpperAngle() * ARM_TICKS_PER_REVOLUTION / 360.0);
-  }
-
-  public void stop() {
-    lowerArm.set(ControlMode.PercentOutput, 0.0);
-    upperArm.set(ControlMode.PercentOutput, 0.0);
-    isStopped = true;
-  }
-
-  private ArmPosition getPosition() {
-    double lowerArmAngle = lowerArm.getSelectedSensorPosition(PID_LOOP_INDEX) / ARM_TICKS_PER_REVOLUTION * 360;
-    double upperArmAngle = upperArm.getSelectedSensorPosition(PID_LOOP_INDEX) / ARM_TICKS_PER_REVOLUTION * 360;
-    // System.out.println("L: " + lowerArmAngle + "; U: " + upperArmAngle);
-
-    // if (upperArmAngle == 0.0 && lowerArmAngle == 0.0) {
-    //   return new ArmPosition(0.0, 0.0, new ArmAngles(0.0, 0.0));
-    // }
-
-    // lengthC = (A^2 + B^2 - 2AB * cos(c))^1/2
-    double lengthC = Math.sqrt(Math.pow(LOWER_ARM_LENGTH, 2) + Math.pow(UPPER_ARM_LENGTH, 2) - 2 * LOWER_ARM_LENGTH * UPPER_ARM_LENGTH * Math.cos(Math.toRadians(upperArmAngle)));
-    // angleB = arccos((C^2 + A^2 - B^2) / (2AC))
-    double angleB = Math.toDegrees(Math.acos((Math.pow(lengthC, 2) + Math.pow(LOWER_ARM_LENGTH, 2) - Math.pow(UPPER_ARM_LENGTH, 2)) / (2 * LOWER_ARM_LENGTH * lengthC)));
-    double angleY = lowerArmAngle - angleB;
-    double angleX = 90.0 - angleY;
-    double lengthX = lengthC / Math.sin(Math.toRadians(90.0)) * Math.sin(Math.toRadians(angleX));
-    double lengthY = lengthC / Math.sin(Math.toRadians(90.0)) * Math.sin(Math.toRadians(angleY));
-
-
-    // System.out.println("C: " + lengthC);
-    // System.out.println("b: " + angleB);
-    // System.out.println("x: " + angleX);
-    // System.out.println("y: " + angleY);
-    // System.out.println("X: " + lengthX);
-    // System.out.println("Y: " + lengthY);
-
-    return new ArmPosition(lengthX, lengthY, new ArmAngles(lowerArmAngle, upperArmAngle));
-  }
-  
-  private ArmAngles getArmAngles(ArmPosition position) {
-    double lengthC = Math.sqrt(Math.pow(position.getX(), 2) + Math.pow(position.getY(), 2));
-    // double angleA = Math.toDegrees(Math.acos((Math.pow(UPPER_ARM_LENGTH, 2) + Math.pow(lengthC, 2) - Math.pow(LOWER_ARM_LENGTH, 2)) / (2 * UPPER_ARM_LENGTH * lengthC)));
-    double angleB = Math.toDegrees(Math.acos((Math.pow(LOWER_ARM_LENGTH, 2) + Math.pow(lengthC, 2) - Math.pow(UPPER_ARM_LENGTH, 2)) / (2 * LOWER_ARM_LENGTH * lengthC)));
-    double angleC = Math.toDegrees(Math.acos((Math.pow(LOWER_ARM_LENGTH, 2) + Math.pow(UPPER_ARM_LENGTH, 2) - Math.pow(lengthC, 2)) / (2 * LOWER_ARM_LENGTH * UPPER_ARM_LENGTH)));
-    double angleD = Math.toDegrees(Math.acos(position.getX() / lengthC));
-
-    if (position.getY() < 0.0) {
-      angleD = angleD * -1.0;
-    }
-    double angleR = angleB + angleD;
-
-    // Angle A, B, C should equal 180
-    return new ArmAngles(angleR, angleC);
   }
 }
