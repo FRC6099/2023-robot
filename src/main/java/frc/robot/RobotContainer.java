@@ -12,6 +12,7 @@ import frc.robot.controllers.OperateArmController;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -27,10 +28,10 @@ public class RobotContainer {
   private final Arm arm = new Arm();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
+  private final CommandXboxController xboxController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
-  private final OperateArmController operateArmController = new OperateArmController(m_driverController);
+  private final OperateArmController operateArmController = new OperateArmController(xboxController);
   private final OperateArm operateArm = new OperateArm(arm, operateArmController);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -67,7 +68,11 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    xboxController.a().whileTrue(new RunCommand(() -> arm.goToPosition(20.0, 0.0), arm));
+    xboxController.y().whileTrue(new RunCommand(() -> arm.goToPosition(30.0, 36.0), arm));
+    xboxController.b().whileTrue(new RunCommand(() -> arm.goToPosition(30.0, 24.0), arm));
+    xboxController.x().whileTrue(new RunCommand(() -> arm.goToPosition(46.0, 32.0), arm));
+
   }
 
   /**
