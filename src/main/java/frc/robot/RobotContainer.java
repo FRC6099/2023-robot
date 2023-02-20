@@ -68,10 +68,10 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    xboxController.a().whileTrue(new RunCommand(() -> arm.goToPosition(20.0, 0.0), arm));
-    xboxController.y().whileTrue(new RunCommand(() -> arm.goToPosition(30.0, 36.0), arm));
-    xboxController.b().whileTrue(new RunCommand(() -> arm.goToPosition(30.0, 24.0), arm));
-    xboxController.x().whileTrue(new RunCommand(() -> arm.goToPosition(46.0, 32.0), arm));
+    xboxController.a().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.FLOOR_PICKUP_POSITION), arm));
+    xboxController.y().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.SHELF_PICKUP_POSITION), arm));
+    xboxController.b().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.NEAR_DROP_POSITION), arm));
+    xboxController.x().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.FAR_DROP_POSITION), arm));
 
   }
 

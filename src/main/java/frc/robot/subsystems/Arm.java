@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.model.ArmAngles;
 import frc.robot.model.ArmPosition;
 import frc.robot.sim.PhysicsSim;
@@ -26,8 +27,8 @@ public class Arm extends SubsystemBase {
   private static double LOWER_MOTOR_REV_TO_ARM_REV = 125.0 / 1.0 * 60.0 / 18.0;   // 125:1, 60:18
   private static double UPPER_MOTOR_REV_TO_ARM_REV = 100.0 / 1.0 * 60.0 / 18.0;   // 100:1, 60:18
 
-  private final TalonSRX lowerArm = new WPI_TalonSRX(0);
-  private final TalonSRX upperArm = new WPI_TalonSRX(1);
+  private final TalonSRX lowerArm = new WPI_TalonSRX(Constants.LOWER_ARM_MOTOR_CAN_ID);
+  private final TalonSRX upperArm = new WPI_TalonSRX(Constants.UPPER_ARM_MOTOR_CAN_ID);
 
   private double lastSetXPosition = -1.0;
   private double lastSetYPosition = -1.0;
@@ -36,8 +37,8 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-    this.configureArm(lowerArm, 110.0, LOWER_MOTOR_REV_TO_ARM_REV);
-    this.configureArm(upperArm, 30.0, UPPER_MOTOR_REV_TO_ARM_REV);
+    this.configureArm(lowerArm, Constants.START_LOWER_ARM_DEGREES, LOWER_MOTOR_REV_TO_ARM_REV);
+    this.configureArm(upperArm, Constants.START_UPPER_ARM_DEGREES, UPPER_MOTOR_REV_TO_ARM_REV);
   }
 
   private void configureArm(TalonSRX arm, double angle, double turnRatio) {
@@ -115,6 +116,10 @@ public class Arm extends SubsystemBase {
 
     // Set Angles
     setArmAngles(angles);
+  }
+
+  public void goToPosition(ArmPosition armPosition) {
+    this.goToPosition(armPosition.getX(), armPosition.getY());
   }
 
   public void goToPosition(double x, double y) {
