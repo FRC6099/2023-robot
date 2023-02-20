@@ -21,7 +21,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-  
+
   /*** USB Ports  ***/
   public static final int XBOX_CONTROLLER_USB_ID = 0;
   public static final int LEFT_JOYSTICK_USB_ID = 1;
@@ -45,18 +45,19 @@ public final class Constants {
 
   /*** Arm Positions ***/
   // Angles
-  public static final double START_LOWER_ARM_DEGREES = 110.0;
-  public static final double START_UPPER_ARM_DEGREES = 30.0;
+  public static final double START_LOWER_ARM_DEGREES = 101.5;
+  public static final double START_UPPER_ARM_DEGREES = 21.5;
 
   // Boundaries
   public static final double MIN_HORIZONTAL_ARM_REACH = 12.0;       // INCHES
-  public static final double MAX_HORIZONTAL_ARM_REACH = 48.0;       // INCHES
-  public static final double MIN_VERTICAL_ARM_REACH = -12.0;        // INCHES
-  public static final double MAX_VERTICAL_ARM_REACH = 76.0;         // INCHES
+  public static final double MAX_HORIZONTAL_ARM_REACH = 69.0;       // INCHES (21.14" front of robot)
+  public static final double MIN_VERTICAL_ARM_REACH = -12.0;        // INCHES (12.15" to ground)
+  public static final double MAX_VERTICAL_ARM_REACH = 63.0;         // INCHES (12.15" deducted from 76")
 
   // Go to Positions
-  public static final ArmPosition FLOOR_PICKUP_POSITION = new ArmPosition(20.0, 0.0);
-  public static final ArmPosition SHELF_PICKUP_POSITION = new ArmPosition(30.0, 36.0);
-  public static final ArmPosition NEAR_DROP_POSITION = new ArmPosition(30.0, 24.0);
-  public static final ArmPosition FAR_DROP_POSITION = new ArmPosition(46.0, 30.0);
+  public static final ArmPosition HOME_ARM_POSITION = new ArmPosition(30.51, 0.98);
+  public static final ArmPosition FLOOR_PICKUP_POSITION = new ArmPosition(29.05, 9.33);
+  public static final ArmPosition SHELF_PICKUP_POSITION = new ArmPosition(32.51, 31.57);
+  public static final ArmPosition NEAR_DROP_POSITION = new ArmPosition(49.72, 30.51);
+  public static final ArmPosition FAR_DROP_POSITION = new ArmPosition(65.07, 44.52);
 }
