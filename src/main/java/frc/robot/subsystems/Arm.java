@@ -112,7 +112,7 @@ public class Arm extends SubsystemBase {
 
     // Calculate Arm Angles
     ArmAngles angles = getArmAngles(position);
-    printStats(position, startX, startY, angles);
+    //printStats(position, startX, startY, angles);
 
     // Set Angles
     setArmAngles(angles);

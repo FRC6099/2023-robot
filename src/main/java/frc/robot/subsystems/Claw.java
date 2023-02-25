@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.model.ClawPosition;
+import frc.robot.sim.PhysicsSim;
 
 public class Claw extends SubsystemBase {
 
@@ -20,7 +21,7 @@ public class Claw extends SubsystemBase {
   private static int GAIN_PID = 0;
   private static int PID_LOOP_INDEX = 0;
   private static double CLAW_TICKS_PER_REVOLUTION = 4096;
-  private static double CLAW_TICKS_PER_DEGREE = CLAW_TICKS_PER_REVOLUTION / 360.0;
+  private static double MOTOR_TICKS_PER_DEGREE = CLAW_TICKS_PER_REVOLUTION / 360.0;
 
   private static final double OPENED_CLAW_ANGLE = 35.0;       // In Degrees (start position)
   private static final double FULLY_CLOSED_CLAW_ANGLE = 0.0;  // IN Degrees
@@ -74,7 +75,8 @@ public class Claw extends SubsystemBase {
 		clawMotor.configMotionAcceleration(4096, TIMEOUT_MS);            // SET THIS FOR MAX MOTOR ACCELERATION
 
 		/* Zero the sensor once on robot boot up */
-    double angleTicks = getSelectedStartingAngle() * CLAW_TICKS_PER_DEGREE;
+    double angleTicks = getSelectedStartingAngle() * MOTOR_TICKS_PER_DEGREE;
+    System.out.println("Starting angle ticks: " + angleTicks);
 		clawMotor.setSelectedSensorPosition(angleTicks, PID_LOOP_INDEX, TIMEOUT_MS);
   }
 
@@ -91,21 +93,23 @@ public class Claw extends SubsystemBase {
         return FULLY_CLOSED_CLAW_ANGLE;
     }
   }
+  
+  public void simulationInit() {
+    PhysicsSim.getInstance().addTalonSRX(clawMotor, 1.0, 8192, false);
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    PhysicsSim.getInstance().run();
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
 
-  public void openClaw() {
-    setAngle(OPENED_CLAW_ANGLE);
-  }
-
-  public void closeClaw() {
-    setAngle(MAX_CLOSED_CLAW_ANGLE);
-  }
-
   public void goToPosition(ClawPosition position) {
+    System.out.println("Go to position: " + position.name());
     switch(position) {
       case OPEN: 
         setAngle(OPENED_CLAW_ANGLE);
@@ -123,7 +127,8 @@ public class Claw extends SubsystemBase {
   }
 
   private void setAngle(double angle) {
-    double motorTicks = angle * CLAW_TICKS_PER_DEGREE;
-    clawMotor.set(ControlMode.Position, motorTicks);
+    double motorTicks = angle * MOTOR_TICKS_PER_DEGREE;
+    System.out.println("Motor ticks: " + motorTicks);
+    clawMotor.set(ControlMode.MotionMagic, motorTicks);
   }
 }

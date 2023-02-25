@@ -9,7 +9,9 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.OperateArm;
 import frc.robot.controllers.OperateArmController;
+import frc.robot.model.ClawPosition;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -26,6 +28,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Arm arm = new Arm();
+  private final Claw claw = new Claw();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xboxController =
@@ -68,11 +71,18 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
+
+    // ARM COMMANDS
     xboxController.a().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.FLOOR_PICKUP_POSITION), arm));
     xboxController.y().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.SHELF_PICKUP_POSITION), arm));
     xboxController.b().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.NEAR_DROP_POSITION), arm));
     xboxController.x().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.FAR_DROP_POSITION), arm));
 
+    // CLAW COMMANDS
+    xboxController.leftTrigger().whileTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.OPEN), claw));
+    xboxController.leftBumper().whileTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.CUBE), claw));
+    xboxController.rightBumper().whileTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.CONE), claw));
+    xboxController.rightTrigger().whileTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.CLOSED), claw));
   }
 
   /**
@@ -87,9 +97,11 @@ public class RobotContainer {
 
   public void simulationInit() {
     arm.simulationInit();
+    claw.simulationInit();
   }
 
   public void simulationPeriodic() {
     arm.simulationPeriodic();
+    claw.simulationPeriodic();
   }
 }
