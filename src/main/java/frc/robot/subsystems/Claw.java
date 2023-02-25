@@ -74,11 +74,11 @@ public class Claw extends SubsystemBase {
 		clawMotor.configMotionAcceleration(4096, TIMEOUT_MS);            // SET THIS FOR MAX MOTOR ACCELERATION
 
 		/* Zero the sensor once on robot boot up */
-    double angleTicks = getSelectedStartingPosition() * CLAW_TICKS_PER_DEGREE;
+    double angleTicks = getSelectedStartingAngle() * CLAW_TICKS_PER_DEGREE;
 		clawMotor.setSelectedSensorPosition(angleTicks, PID_LOOP_INDEX, TIMEOUT_MS);
   }
 
-  private double getSelectedStartingPosition() {
+  private double getSelectedStartingAngle() {
     switch(Constants.STARTING_CLAW_POSITION) {
       case OPEN:
         return OPENED_CLAW_ANGLE;
