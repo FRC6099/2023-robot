@@ -8,5 +8,6 @@ package frc.robot.model;
 public enum ClawPosition {
     OPEN,
     CUBE,
-    CONE
+    CONE,
+    CLOSED
 }

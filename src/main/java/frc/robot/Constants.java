@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.model.ArmPosition;
+import frc.robot.model.ClawPosition;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -60,4 +61,7 @@ public final class Constants {
   public static final ArmPosition SHELF_PICKUP_POSITION = new ArmPosition(32.51, 31.57);
   public static final ArmPosition NEAR_DROP_POSITION = new ArmPosition(49.72, 30.51);
   public static final ArmPosition FAR_DROP_POSITION = new ArmPosition(65.07, 44.52);
+
+  /*** Claw Positions ***/
+  public static final ClawPosition STARTING_CLAW_POSITION = ClawPosition.CONE;
 }
