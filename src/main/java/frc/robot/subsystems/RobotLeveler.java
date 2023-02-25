@@ -23,6 +23,9 @@ public class RobotLeveler extends SubsystemBase {
   }
 
   public boolean makeRobotLevel() {
+    // TODO: This needs to be heavily re-evaluated
+    //  https://www.chiefdelphi.com/t/adis-16470-wpilibj-class-mystery-why-can-we-only-get-one-axis-at-a-time/425461
+    //  https://www.chiefdelphi.com/t/analog-devices-adis-16470-eng-basic-java-gyro-code-help/422553
     this.imu.setYawAxis(IMUAxis.kX);
     double yaw = this.imu.getAngle();
     this.imu.setYawAxis(IMUAxis.kZ);
