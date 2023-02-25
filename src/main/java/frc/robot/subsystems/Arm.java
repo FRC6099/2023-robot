@@ -112,7 +112,7 @@ public class Arm extends SubsystemBase {
 
     // Calculate Arm Angles
     ArmAngles angles = getArmAngles(position);
-    //printStats(position, startX, startY, angles);
+    printStats(position, startX, startY, angles);
 
     // Set Angles
     setArmAngles(angles);
@@ -217,27 +217,30 @@ public class Arm extends SubsystemBase {
   }
 
   private void printStats(ArmPosition pos, double startX, double startY, ArmAngles angles) {
-    // System.out.println("Start X: " + (pos.getX()-x) + 
-    //         "; Start Y: " + (pos.getY()-y) + 
-    //         "; Next X: " + pos.getX() + 
-    //         "; Next Y: " + pos.getY() + 
-    //         "; Set X: " + lastSetXPosition + 
-    //         "; Set Y: " + lastSetYPosition + 
-    //         "; Start lower: " + pos.getArmAngles().getLowerAngle() + 
-    //         "; Start upper: " + pos.getArmAngles().getUpperAngle() +
-    //         "; Next lower: " + angles.getLowerAngle() + 
-    //         "; Next upper: " + angles.getUpperAngle()
-    //         );
-    System.out.println(startX + 
-            "|" + startY + 
-            "|" + pos.getX() + 
-            "|" + pos.getY() + 
-            "|" + lastSetXPosition + 
-            "|" + lastSetYPosition + 
-            "|" + pos.getArmAngles().getLowerAngle() + 
-            "|" + pos.getArmAngles().getUpperAngle() +
-            "|" + angles.getLowerAngle() + 
-            "|" + angles.getUpperAngle()
-            );
+    if (Constants.ARM_LOGGING) {
+      // System.out.println("Start X: " + (pos.getX()-x) + 
+      //         "; Start Y: " + (pos.getY()-y) + 
+      //         "; Next X: " + pos.getX() + 
+      //         "; Next Y: " + pos.getY() + 
+      //         "; Set X: " + lastSetXPosition + 
+      //         "; Set Y: " + lastSetYPosition + 
+      //         "; Start lower: " + pos.getArmAngles().getLowerAngle() + 
+      //         "; Start upper: " + pos.getArmAngles().getUpperAngle() +
+      //         "; Next lower: " + angles.getLowerAngle() + 
+      //         "; Next upper: " + angles.getUpperAngle()
+      //         );
+      System.out.println(startX + 
+              "|" + startY + 
+              "|" + pos.getX() + 
+              "|" + pos.getY() + 
+              "|" + lastSetXPosition + 
+              "|" + lastSetYPosition + 
+              "|" + pos.getArmAngles().getLowerAngle() + 
+              "|" + pos.getArmAngles().getUpperAngle() +
+              "|" + angles.getLowerAngle() + 
+              "|" + angles.getUpperAngle()
+              );
+    }
+    
   }
 }

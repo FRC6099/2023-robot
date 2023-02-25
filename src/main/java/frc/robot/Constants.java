@@ -62,6 +62,8 @@ public final class Constants {
   public static final ArmPosition NEAR_DROP_POSITION = new ArmPosition(49.72, 30.51);
   public static final ArmPosition FAR_DROP_POSITION = new ArmPosition(65.07, 44.52);
 
+  public static final boolean ARM_LOGGING = true;
+
   /*** Claw Positions ***/
   public static final ClawPosition STARTING_CLAW_POSITION = ClawPosition.CONE;
 }

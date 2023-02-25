@@ -76,7 +76,6 @@ public class Claw extends SubsystemBase {
 
 		/* Zero the sensor once on robot boot up */
     double angleTicks = getSelectedStartingAngle() * MOTOR_TICKS_PER_DEGREE;
-    System.out.println("Starting angle ticks: " + angleTicks);
 		clawMotor.setSelectedSensorPosition(angleTicks, PID_LOOP_INDEX, TIMEOUT_MS);
   }
 
@@ -109,7 +108,6 @@ public class Claw extends SubsystemBase {
   }
 
   public void goToPosition(ClawPosition position) {
-    System.out.println("Go to position: " + position.name());
     switch(position) {
       case OPEN: 
         setAngle(OPENED_CLAW_ANGLE);
@@ -128,7 +126,6 @@ public class Claw extends SubsystemBase {
 
   private void setAngle(double angle) {
     double motorTicks = angle * MOTOR_TICKS_PER_DEGREE;
-    System.out.println("Motor ticks: " + motorTicks);
     clawMotor.set(ControlMode.MotionMagic, motorTicks);
   }
 }
