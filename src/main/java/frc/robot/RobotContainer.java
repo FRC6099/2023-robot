@@ -7,8 +7,12 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.OperateArm;
+import frc.robot.controllers.OperateArmController;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -21,10 +25,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final Arm arm = new Arm();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
+  private final CommandXboxController xboxController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+
+  private final OperateArmController operateArmController = new OperateArmController(xboxController);
+  private final OperateArm operateArm = new OperateArm(arm, operateArmController);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -41,6 +49,7 @@ public class RobotContainer {
    */
   private void configureSubsystems() {
     // this.mySubsystem.setDefaultCommand(myCommand);
+    this.arm.setDefaultCommand(operateArm);
   }
 
   /**
@@ -59,7 +68,11 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    xboxController.a().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.FLOOR_PICKUP_POSITION), arm));
+    xboxController.y().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.SHELF_PICKUP_POSITION), arm));
+    xboxController.b().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.NEAR_DROP_POSITION), arm));
+    xboxController.x().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.FAR_DROP_POSITION), arm));
+
   }
 
   /**
@@ -70,5 +83,13 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return Autos.exampleAuto(m_exampleSubsystem);
+  }
+
+  public void simulationInit() {
+    arm.simulationInit();
+  }
+
+  public void simulationPeriodic() {
+    arm.simulationPeriodic();
   }
 }
