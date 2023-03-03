@@ -10,18 +10,19 @@ import frc.robot.model.LevelMovement;
 import frc.robot.subsystems.thirdparty.ADIS16470_IMU;
 import frc.robot.subsystems.thirdparty.ADIS16470_IMU.IMUAxis;
 
-public class RobotLeveler extends SubsystemBase {
+public class Leveler extends SubsystemBase {
 
   private final ADIS16470_IMU imu;
   private final IMUAxis yawAxis;
   private final IMUAxis rollAxis;
   private final IMUAxis pitchAxis;
   /** Creates a new RobotLeveler. */
-  public RobotLeveler() {
+  public Leveler() {
     this.imu = new ADIS16470_IMU();
     this.yawAxis = imu.getYawAxis();
     this.rollAxis = imu.getRollAxis();
     this.pitchAxis = imu.getPitchAxis();
+    this.imu.calibrate();
   }
 
   @Override
