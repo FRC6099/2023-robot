@@ -29,6 +29,10 @@ public final class Constants {
   public static final int RIGHT_JOYSTICK_USB_ID = 2;
 
 
+  /*** Joystick Mappings ***/
+  public static final int LEVELER_BUTTON_ID = 0;
+
+
   /*** CAN IDs  ***/
   // Drive Train
   public static final int RIGHT_FRONT_DRIVE_MOTOR_CAN_ID=1;
@@ -66,4 +70,8 @@ public final class Constants {
 
   /*** Claw Positions ***/
   public static final ClawPosition STARTING_CLAW_POSITION = ClawPosition.CONE;
+
+  /*** Leveler ***/
+  public static final double LEVELER_ROLL_VARIANCE = 2.0;
+  public static final double LEVELER_PITCH_VARIANCE = 2.0;
 }

@@ -56,13 +56,13 @@ public class Leveler extends SubsystemBase {
     // If PITCH > 0   AND PITCH < 45,  move forward
     // If PICTH < 360 AND PITCH > 315, move backward
 
-    if (roll < 360.0 && roll > 315.0) {
+    if (isRollingLeft(roll)) {
       return LevelMovement.RIGHT;
-    } else if (roll > 0.0 && roll < 45.0) {
+    } else if (isRollingRight(roll)) {
       return LevelMovement.LEFT;
-    } else if (pitch > 0.0 && pitch < 45.0) {
+    } else if (isPitchUp(pitch)) {
       return LevelMovement.FORWARD;
-    } else if (pitch < 360.0 && pitch > 315.0) {
+    } else if (isPitchDown(pitch)) {
       return LevelMovement.REVERSE;
     }
 
@@ -71,5 +71,25 @@ public class Leveler extends SubsystemBase {
 
   public boolean isLevel() {
     return this.getLevelMovement() == LevelMovement.STOP;
+  }
+
+  private boolean isRollingLeft(double roll) {
+    return roll < 360.0 - Constants.LEVELER_ROLL_VARIANCE
+        && roll > 315.0;
+  }
+
+  private boolean isRollingRight(double roll) {
+    return roll > 0.0 + Constants.LEVELER_ROLL_VARIANCE
+        && roll < 45.0;
+  }
+
+  private boolean isPitchUp(double pitch)  {
+    return pitch > 0.0 + Constants.LEVELER_PITCH_VARIANCE
+        && pitch < 45.0;
+  }
+
+  private boolean isPitchDown(double pitch)  {
+    return pitch < 360.0 + Constants.LEVELER_PITCH_VARIANCE
+        && pitch > 315.0;
   }
 }
