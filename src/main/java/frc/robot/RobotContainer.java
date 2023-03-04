@@ -5,22 +5,23 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.LevelRobot;
 import frc.robot.commands.OperateArm;
 import frc.robot.commands.TankDrive;
+import frc.robot.commands.autonomous.BackupCommandSequence;
 import frc.robot.controllers.OperateArmController;
 import frc.robot.controllers.TankDriveController;
 import frc.robot.model.ClawPosition;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Handbrake;
 import frc.robot.subsystems.Leveler;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -33,7 +34,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final DriveTrain driveTrain = new DriveTrain();
   private final Arm arm = new Arm();
   private final Claw claw = new Claw();
@@ -49,11 +49,16 @@ public class RobotContainer {
   private final OperateArm operateArm = new OperateArm(arm, new OperateArmController(xboxController));
   private final TankDrive tankDrive = new TankDrive(driveTrain, new TankDriveController(leftJoystick, rightJoystick));
 
+  // Autonomous Commands
+  // Add ability to choose autonomous mode in SmartDashboard
+  private final SendableChooser<Command> autonomousChooser = new SendableChooser<>();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
     configureSubsystems();
+    configureAutonomousModes();
   }
 
   /**
@@ -68,6 +73,12 @@ public class RobotContainer {
     this.driveTrain.setDefaultCommand(tankDrive);
   }
 
+  private void configureAutonomousModes() {
+    this.autonomousChooser.setDefaultOption("Reverse", new BackupCommandSequence(driveTrain));
+    this.autonomousChooser.addOption("Do nothing", new WaitCommand(10.0));
+    SmartDashboard.putData(this.autonomousChooser);
+  }
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
@@ -78,13 +89,6 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-
     // ARM COMMANDS
     xboxController.a().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.FLOOR_PICKUP_POSITION), arm));
     xboxController.y().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.SHELF_PICKUP_POSITION), arm));
@@ -116,7 +120,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return autonomousChooser.getSelected();
   }
 
   public void simulationInit() {
