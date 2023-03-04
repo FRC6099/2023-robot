@@ -7,17 +7,21 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Handbrake extends SubsystemBase {
 
-  private static final int WAIT_PERIOD = 10;
+  private static final double WAIT_PERIOD = 1.5;
 
   private final WPI_VictorSPX leftHandbrake = new WPI_VictorSPX(Constants.LEFT_HANDBRAKE_CAN_ID);
   private final WPI_VictorSPX rightHandbrake = new WPI_VictorSPX(Constants.RIGHT_HANDBRAKE_CAN_ID);
 
-  private int timeout = 0;
+  private final Timer timer = new Timer();
+
+  private boolean isEngaging = false;
+  private boolean isReleasing = false;
 
   /** Creates a new Handbrake. */
   public Handbrake() {}
@@ -28,26 +32,34 @@ public class Handbrake extends SubsystemBase {
   }
 
   public void engage() {
-    if (timeout < 0) {
-      timeout = 0;
+    if (!isEngaging) {
+      isEngaging = true;
+      isReleasing = false;
+      timer.reset();
+      timer.start();
     }
 
-    if (timeout++ < WAIT_PERIOD) {
+    if (!timer.hasElapsed(WAIT_PERIOD)) {
       setMotors(0.2);
     } else {
       stopMotors();
+      timer.stop();
     }
   }
 
   public void release() {
-    if (timeout > 5) {
-      timeout = 5;
+    if (!isReleasing) {
+      isReleasing = true;
+      isEngaging = false;
+      timer.reset();
+      timer.start();
     }
 
-    if (timeout-- > 0) {
+    if (!timer.hasElapsed(WAIT_PERIOD)) {
       setMotors(-0.2);
     } else {
       stopMotors();
+      timer.stop();
     }
   }
 
