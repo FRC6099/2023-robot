@@ -99,7 +99,6 @@ public class RobotContainer {
     xboxController.leftTrigger().whileTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.OPEN), claw));
     xboxController.leftBumper().whileTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.CUBE), claw));
     xboxController.rightBumper().whileTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.CONE), claw));
-    xboxController.rightTrigger().whileTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.CLOSED), claw));
 
     // LEVELER COMMANDS
     leftJoystick.button(Constants.LEVELER_BUTTON_ID).whileTrue(new LevelRobot(leveler, driveTrain));
