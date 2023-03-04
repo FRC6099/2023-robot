@@ -30,16 +30,16 @@ public final class Constants {
 
 
   /*** Joystick Mappings ***/
-  public static final int LEVELER_BUTTON_ID = 11;
-  public static final int HANDBRAKE_ENGAGE_BUTTON_ID = 12;
-  public static final int HANDBRAKE_RELEASE_BUTTON_ID = 12;
+  public static final int LEVELER_BUTTON_ID = 4;
+  public static final int HANDBRAKE_ENGAGE_BUTTON_ID = 5;
+  public static final int HANDBRAKE_RELEASE_BUTTON_ID = 5;
 
   /*** CAN IDs  ***/
   // Drive Train
-  public static final int RIGHT_FRONT_DRIVE_MOTOR_CAN_ID=1;
-  public static final int RIGHT_REAR_DRIVE_MOTOR_CAN_ID=2;
-  public static final int LEFT_FRONT_DRIVE_MOTOR_CAN_ID=3;
-  public static final int LEFT_REAR_DRIVE_MOTOR_CAN_ID=4;
+  public static final int RIGHT_FRONT_DRIVE_MOTOR_CAN_ID = 1;
+  public static final int RIGHT_REAR_DRIVE_MOTOR_CAN_ID = 2;
+  public static final int LEFT_FRONT_DRIVE_MOTOR_CAN_ID = 3;
+  public static final int LEFT_REAR_DRIVE_MOTOR_CAN_ID = 4;
 
   // Arm
   public static final int LOWER_ARM_MOTOR_CAN_ID = 5;

@@ -8,12 +8,14 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Handbrake extends SubsystemBase {
 
   private static final double WAIT_PERIOD = 1.5;
+  private static final String HANDBRAKE = "Handbrake";
 
   private final WPI_VictorSPX leftHandbrake = new WPI_VictorSPX(Constants.LEFT_HANDBRAKE_CAN_ID);
   private final WPI_VictorSPX rightHandbrake = new WPI_VictorSPX(Constants.RIGHT_HANDBRAKE_CAN_ID);
@@ -21,45 +23,52 @@ public class Handbrake extends SubsystemBase {
   private final Timer timer = new Timer();
 
   private boolean isEngaging = false;
+  private boolean isEngaged = false;
   private boolean isReleasing = false;
 
   /** Creates a new Handbrake. */
-  public Handbrake() {}
+  public Handbrake() {
+    SmartDashboard.setDefaultBoolean(HANDBRAKE, false);
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (isEngaging && !timer.hasElapsed(WAIT_PERIOD)) {
+      setMotors(0.8);
+
+    } else if (isEngaging) {
+      stopMotors();
+      timer.stop();
+      isEngaged = true;
+      SmartDashboard.putBoolean(HANDBRAKE, true);
+
+    } else if (isReleasing && !timer.hasElapsed(WAIT_PERIOD)) {
+      setMotors(-0.8);
+      
+    } else if (isReleasing) {
+      stopMotors();
+      timer.stop();
+      isEngaged = false;
+      SmartDashboard.putBoolean(HANDBRAKE, false);
+    }
   }
 
   public void engage() {
-    if (!isEngaging) {
+    if (!isEngaging && !isEngaged) {
       isEngaging = true;
       isReleasing = false;
       timer.reset();
       timer.start();
     }
-
-    if (!timer.hasElapsed(WAIT_PERIOD)) {
-      setMotors(0.2);
-    } else {
-      stopMotors();
-      timer.stop();
-    }
   }
 
   public void release() {
-    if (!isReleasing) {
+    if (!isReleasing && isEngaged) {
       isReleasing = true;
       isEngaging = false;
       timer.reset();
       timer.start();
-    }
-
-    if (!timer.hasElapsed(WAIT_PERIOD)) {
-      setMotors(-0.2);
-    } else {
-      stopMotors();
-      timer.stop();
     }
   }
 
