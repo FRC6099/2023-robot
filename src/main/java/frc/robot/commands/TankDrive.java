@@ -5,20 +5,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.controllers.TankDriveController;
 import frc.robot.subsystems.DriveTrain;
 
 public class TankDrive extends CommandBase {
   private final DriveTrain driveTrain;
   private final TankDriveController controller;
-  private boolean turbo;
 
   /** Creates a new TankDrive. */
   public TankDrive(DriveTrain driveTrain, TankDriveController controller) {
     this.driveTrain = driveTrain;
     this.controller = controller;
-    this.turbo = false;
     addRequirements(driveTrain);
   }
 
@@ -36,14 +33,6 @@ public class TankDrive extends CommandBase {
     
     this.driveTrain.moveLeftMotors(left * left * leftDirection);
     this.driveTrain.moveRightMotors(right * right * rightDirection);
-  }
-
-  public void activateTurbo() {
-    this.turbo = true;
-  }
-
-  public void deactivateTurbo() {
-    this.turbo = false;
   }
 
   // Called once the command ends or is interrupted.
