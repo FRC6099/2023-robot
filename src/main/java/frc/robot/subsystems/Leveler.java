@@ -13,13 +13,13 @@ import frc.robot.subsystems.thirdparty.ADIS16470_IMU.IMUAxis;
 public class Leveler extends SubsystemBase {
 
   private final ADIS16470_IMU imu;
-  private final IMUAxis yawAxis;
+  // private final IMUAxis yawAxis;
   private final IMUAxis rollAxis;
   private final IMUAxis pitchAxis;
   /** Creates a new RobotLeveler. */
   public Leveler() {
     this.imu = new ADIS16470_IMU();
-    this.yawAxis = imu.getYawAxis();
+    // this.yawAxis = imu.getYawAxis();
     this.rollAxis = imu.getRollAxis();
     this.pitchAxis = imu.getPitchAxis();
     this.imu.calibrate();
@@ -34,7 +34,7 @@ public class Leveler extends SubsystemBase {
     // TODO: This needs to be heavily evaluated
     //  https://www.chiefdelphi.com/t/adis-16470-wpilibj-class-mystery-why-can-we-only-get-one-axis-at-a-time/425461
     //  https://www.chiefdelphi.com/t/analog-devices-adis-16470-eng-basic-java-gyro-code-help/422553
-    double yaw = this.imu.getAngle(yawAxis) % 360.0;
+    // double yaw = this.imu.getAngle(yawAxis) % 360.0;
     double roll = this.imu.getAngle(rollAxis) % 360.0;
     double pitch = this.imu.getAngle(pitchAxis) % 360.0;
     

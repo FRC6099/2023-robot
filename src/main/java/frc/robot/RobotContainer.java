@@ -15,8 +15,8 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Handbrake;
 import frc.robot.subsystems.Leveler;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -36,6 +36,7 @@ public class RobotContainer {
   private final Arm arm = new Arm();
   private final Claw claw = new Claw();
   private final Leveler leveler = new Leveler();
+  private final Handbrake handbrake = new Handbrake();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xboxController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -94,6 +95,14 @@ public class RobotContainer {
 
     // LEVELER COMMANDS
     leftJoystick.button(Constants.LEVELER_BUTTON_ID).whileTrue(new LevelRobot(leveler, driveTrain));
+
+    // HANDBRAKE COMMANDS
+    rightJoystick.button(Constants.HANDBRAKE_ENGAGE_BUTTON_ID).whileTrue(new RunCommand(() -> { 
+      driveTrain.stop(); 
+      handbrake.engage();
+    }, handbrake, driveTrain));
+    leftJoystick.button(Constants.HANDBRAKE_RELEASE_BUTTON_ID).whileTrue(new RunCommand(() -> 
+      handbrake.release(), handbrake));
   }
 
   /**
