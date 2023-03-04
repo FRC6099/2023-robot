@@ -42,8 +42,7 @@ public class TankDrive extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    this.driveTrain.moveLeftMotors(0.0);
-    this.driveTrain.moveRightMotors(0.0);
+    this.driveTrain.stop();
   }
 
   // Returns true when the command should end.
