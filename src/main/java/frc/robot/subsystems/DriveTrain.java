@@ -30,8 +30,14 @@ public class DriveTrain extends SubsystemBase {
     leftFrontMotor.set(ControlMode.PercentOutput, speed);
     leftRearMotor.set(ControlMode.PercentOutput, speed);
   }
+  
   public void moveRightMotors(double speed) {
     rightFrontMotor.set(ControlMode.PercentOutput, -speed);
     rightRearMotor.set(ControlMode.PercentOutput, -speed);
+  }
+
+  public void stop() {
+    moveLeftMotors(0.0);
+    moveRightMotors(0.0);
   }
 }

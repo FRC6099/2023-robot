@@ -25,7 +25,6 @@ public class Claw extends SubsystemBase {
 
   private static final double OPENED_CLAW_ANGLE = 35.0;       // In Degrees (start position)
   private static final double FULLY_CLOSED_CLAW_ANGLE = 0.0;  // IN Degrees
-  private static final double MAX_CLOSED_CLAW_ANGLE = 5.0;    // In Degrees
   private static final double CUBE_CLOSED_CLAW_ANGLE = 20.0;  // In Degrees
   private static final double CONE_CLOSED_CLAW_ANGLE = 15.0;  // In Degrees
   private final TalonSRX clawMotor = new WPI_TalonSRX(Constants.CLAW_MOTOR_CAN_ID);
@@ -116,10 +115,8 @@ public class Claw extends SubsystemBase {
         setAngle(CONE_CLOSED_CLAW_ANGLE);
         break;
       case CUBE:
-        setAngle(CUBE_CLOSED_CLAW_ANGLE);
-        break;
       case CLOSED:
-        setAngle(MAX_CLOSED_CLAW_ANGLE);
+        setAngle(CUBE_CLOSED_CLAW_ANGLE);
         break;
     }
   }
