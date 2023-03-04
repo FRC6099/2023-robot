@@ -106,11 +106,14 @@ public class RobotContainer {
 
     // HANDBRAKE COMMANDS
     rightJoystick.button(Constants.HANDBRAKE_ENGAGE_BUTTON_ID).whileTrue(new RunCommand(() -> { 
+      tankDrive.disable();
       driveTrain.stop(); 
       handbrake.engage();
     }, handbrake, driveTrain));
-    leftJoystick.button(Constants.HANDBRAKE_RELEASE_BUTTON_ID).whileTrue(new RunCommand(() -> 
-      handbrake.release(), handbrake));
+    leftJoystick.button(Constants.HANDBRAKE_RELEASE_BUTTON_ID).whileTrue(new RunCommand(() -> {
+      handbrake.release();
+      tankDrive.enable();
+    }, handbrake));
   }
 
   /**

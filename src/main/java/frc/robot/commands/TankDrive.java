@@ -11,6 +11,7 @@ import frc.robot.subsystems.DriveTrain;
 public class TankDrive extends CommandBase {
   private final DriveTrain driveTrain;
   private final TankDriveController controller;
+  private boolean enabled = true;
 
   /** Creates a new TankDrive. */
   public TankDrive(DriveTrain driveTrain, TankDriveController controller) {
@@ -26,6 +27,9 @@ public class TankDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (!enabled) {
+      return;
+    }
     double left = controller.getLeftPosition();
     double right = controller.getRightPosition();
     double leftDirection = left > 0.0 ? 1.0 : -1.0;
@@ -46,5 +50,13 @@ public class TankDrive extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  public void enable() {
+    this.enabled = true;
+  }
+
+  public void disable() {
+    this.enabled = false;
   }
 }
