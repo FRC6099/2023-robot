@@ -9,7 +9,9 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.LevelRobot;
 import frc.robot.commands.OperateArm;
+import frc.robot.commands.TankDrive;
 import frc.robot.controllers.OperateArmController;
+import frc.robot.controllers.TankDriveController;
 import frc.robot.model.ClawPosition;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
@@ -43,8 +45,9 @@ public class RobotContainer {
   private final CommandJoystick leftJoystick = new CommandJoystick(Constants.LEFT_JOYSTICK_USB_ID);
   private final CommandJoystick rightJoystick = new CommandJoystick(Constants.RIGHT_JOYSTICK_USB_ID);
 
-  private final OperateArmController operateArmController = new OperateArmController(xboxController);
-  private final OperateArm operateArm = new OperateArm(arm, operateArmController);
+  // Default Commands
+  private final OperateArm operateArm = new OperateArm(arm, new OperateArmController(xboxController));
+  private final TankDrive tankDrive = new TankDrive(driveTrain, new TankDriveController(leftJoystick, rightJoystick));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -62,6 +65,7 @@ public class RobotContainer {
   private void configureSubsystems() {
     // this.mySubsystem.setDefaultCommand(myCommand);
     this.arm.setDefaultCommand(operateArm);
+    this.driveTrain.setDefaultCommand(tankDrive);
   }
 
   /**
