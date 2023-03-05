@@ -118,16 +118,22 @@ public class Arm extends SubsystemBase {
     setArmAngles(angles);
   }
 
-  public void goToPosition(ArmPosition armPosition) {
-    this.goToPosition(armPosition.getX(), armPosition.getY());
+  public boolean goToPosition(double x, double y) {
+    return goToPosition(new ArmPosition(x, y));
   }
 
-  public void goToPosition(double x, double y) {
-    ArmPosition position = new ArmPosition(x, y, null);
-    ArmAngles angles = getArmAngles(position);
+  public boolean goToPosition(ArmPosition targetPosition) {
+    ArmAngles targetAngles = getArmAngles(targetPosition);
     ArmPosition currentPosition = getCurrentPosition();
-    System.out.println(currentPosition.getX() + "|" + currentPosition.getY() + "|" + x + "|" + y + "|" + angles.getLowerAngle() + "|" + angles.getLowerAngle());
-    setArmAngles(angles);
+    System.out.println(currentPosition.getX() + "|" + currentPosition.getY() + "|" + targetPosition.getX() + "|" + targetPosition.getY() + "|" + targetAngles.getLowerAngle() + "|" + targetAngles.getLowerAngle());
+    setArmAngles(targetAngles);
+    return withinThreshold(currentPosition, targetPosition);
+  }
+
+  private boolean withinThreshold(ArmPosition current, ArmPosition target) {
+    double offsetX = Math.abs(target.getX() - current.getX());
+    double offsetY = Math.abs(target.getY() - current.getY());
+    return offsetX < 0.5 && offsetY < 0.5;
   }
 
   public void setArmAngles(ArmAngles angles) {
