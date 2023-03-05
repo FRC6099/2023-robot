@@ -38,6 +38,7 @@ public class Forward extends CommandBase {
     driveTrain.moveRightMotors(0.505);
     timer.reset();
     timer.start();
+    System.out.println("** Moving Forward");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -48,6 +49,7 @@ public class Forward extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     timer.stop();
+    System.out.println("** Moving Forward Complete");
   }
 
   // Returns true when the command should end.

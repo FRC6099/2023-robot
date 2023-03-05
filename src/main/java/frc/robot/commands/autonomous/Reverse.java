@@ -38,6 +38,7 @@ public class Reverse extends CommandBase {
     driveTrain.moveRightMotors(-0.505);
     timer.reset();
     timer.start();
+    System.out.println("** Moving in Reverse");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -48,6 +49,7 @@ public class Reverse extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     timer.stop();
+    System.out.println("** Moving in Reverse Complete");
   }
 
   // Returns true when the command should end.

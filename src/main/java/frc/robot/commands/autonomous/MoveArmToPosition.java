@@ -25,6 +25,7 @@ public class MoveArmToPosition extends CommandBase {
   @Override
   public void initialize() {
     hasReachedPosition = false;
+    System.out.println("** Moving Arm to Position");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,6 +39,7 @@ public class MoveArmToPosition extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     arm.stop();
+    System.out.println("** Moving Arm to Position Complete");
   }
 
   // Returns true when the command should end.

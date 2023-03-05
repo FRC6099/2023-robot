@@ -5,6 +5,7 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.LevelRobot;
@@ -26,7 +27,9 @@ public class ChargeCommandSequence extends SequentialCommandGroup {
     addCommands(
       new MoveArmToPosition(arm, Constants.FAR_DROP_POSITION),
       new MoveClawToPosition(claw, ClawPosition.OPEN),
-      new ArmHomeAndReverse(arm, driveTrain),    // Move Arm to Home and Reverse Past Platform in parallel
+      new ParallelCommandGroup( // Move Arm to Home and Reverse Past Platform in parallel
+        new MoveArmToPosition(arm, Constants.HOME_ARM_POSITION), 
+        new Reverse(driveTrain, 7.0)),
       new Forward(driveTrain, 1.0),    // Forward on platform
       new LevelRobot(leveler, driveTrain),
       new InstantCommand(() -> handbrake.engage(), handbrake)

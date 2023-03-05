@@ -70,7 +70,7 @@ public class Claw extends SubsystemBase {
 
 		/* Set acceleration and vcruise velocity - see documentation */
 		clawMotor.configMotionCruiseVelocity(4740 * 30, TIMEOUT_MS);                  // SET THIS FOR MAX MOTOR SPEED
-		clawMotor.configMotionAcceleration(4096, TIMEOUT_MS);            // SET THIS FOR MAX MOTOR ACCELERATION
+		clawMotor.configMotionAcceleration(40, TIMEOUT_MS);            // SET THIS FOR MAX MOTOR ACCELERATION
 
 		/* Zero the sensor once on robot boot up */
     double angleTicks = getSelectedStartingAngle() * MOTOR_TICKS_PER_DEGREE;

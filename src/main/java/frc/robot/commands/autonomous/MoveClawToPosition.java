@@ -25,6 +25,7 @@ public class MoveClawToPosition extends CommandBase {
   @Override
   public void initialize() {
     hasReachedPosition = false;
+    System.out.println("** Moving Claw to Position");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,6 +38,7 @@ public class MoveClawToPosition extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     claw.stop();
+    System.out.println("** Moving Claw to Position Complete");
   }
 
   // Returns true when the command should end.

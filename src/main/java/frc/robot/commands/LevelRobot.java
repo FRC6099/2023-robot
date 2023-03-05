@@ -23,7 +23,9 @@ public class LevelRobot extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    System.out.println("** Leveling Robot");
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -56,6 +58,7 @@ public class LevelRobot extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     driveTrain.stop();
+    System.out.println("** Leveling Robot Complete");
   }
 
   // Returns true when the command should end.
