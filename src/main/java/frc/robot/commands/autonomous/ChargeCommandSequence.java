@@ -26,8 +26,7 @@ public class ChargeCommandSequence extends SequentialCommandGroup {
     addCommands(
       new MoveArmToPosition(arm, Constants.FAR_DROP_POSITION),
       new MoveClawToPosition(claw, ClawPosition.OPEN),
-      new MoveArmToPosition(arm, Constants.HOME_ARM_POSITION),
-      new Reverse(driveTrain, 7.0),   // Reverse past platform
+      new ArmHomeAndReverse(arm, driveTrain),    // Move Arm to Home and Reverse Past Platform in parallel
       new Forward(driveTrain, 1.0),    // Forward on platform
       new LevelRobot(leveler, driveTrain),
       new InstantCommand(() -> handbrake.engage(), handbrake)
