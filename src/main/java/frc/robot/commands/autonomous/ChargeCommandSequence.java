@@ -4,30 +4,33 @@
 
 package frc.robot.commands.autonomous;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.commands.LevelRobot;
 import frc.robot.model.ClawPosition;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Handbrake;
+import frc.robot.subsystems.Leveler;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ChargeCommandSequence extends SequentialCommandGroup {
   /** Creates a new ChargeCommandSequence. */
-  public ChargeCommandSequence(Arm arm, Claw claw, DriveTrain driveTrain) {
+  public ChargeCommandSequence(Arm arm, Claw claw, DriveTrain driveTrain, Leveler leveler, Handbrake handbrake) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new MoveArmToPosition(arm, Constants.FAR_DROP_POSITION),
       new MoveClawToPosition(claw, ClawPosition.OPEN),
       new MoveArmToPosition(arm, Constants.HOME_ARM_POSITION),
-      new Reverse(driveTrain, 7.0)
-      // Move Forward until not level
-      // Level
-      // Apply Handbrake
-      // Stop
+      new Reverse(driveTrain, 7.0),   // Reverse past platform
+      new Forward(driveTrain, 1.0),    // Forward on platform
+      new LevelRobot(leveler, driveTrain),
+      new InstantCommand(() -> handbrake.engage(), handbrake)
     );
   }
 }
