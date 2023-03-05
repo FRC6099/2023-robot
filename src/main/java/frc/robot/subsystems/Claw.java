@@ -24,7 +24,6 @@ public class Claw extends SubsystemBase {
   private static double MOTOR_TICKS_PER_DEGREE = CLAW_TICKS_PER_REVOLUTION / 360.0;
 
   private static final double OPENED_CLAW_ANGLE = 35.0;       // In Degrees (start position)
-  private static final double FULLY_CLOSED_CLAW_ANGLE = 0.0;  // IN Degrees
   private static final double CUBE_CLOSED_CLAW_ANGLE = 20.0;  // In Degrees
   private static final double CONE_CLOSED_CLAW_ANGLE = 15.0;  // In Degrees
   private final TalonSRX clawMotor = new WPI_TalonSRX(Constants.CLAW_MOTOR_CAN_ID);
@@ -79,17 +78,22 @@ public class Claw extends SubsystemBase {
   }
 
   private double getSelectedStartingAngle() {
-    switch(Constants.STARTING_CLAW_POSITION) {
+    switch(Constants.getStartingClawPosition()) {
       case OPEN:
         return OPENED_CLAW_ANGLE;
       case CUBE:
         return CUBE_CLOSED_CLAW_ANGLE;
       case CONE:
-        return CONE_CLOSED_CLAW_ANGLE;
       case CLOSED:
       default:
-        return FULLY_CLOSED_CLAW_ANGLE;
+        return CONE_CLOSED_CLAW_ANGLE;
     }
+  }
+
+  public void initSensorPosition() {
+    /* Zero the sensor once on robot boot up */
+    double angleTicks = getSelectedStartingAngle() * MOTOR_TICKS_PER_DEGREE;
+		clawMotor.setSelectedSensorPosition(angleTicks, PID_LOOP_INDEX, TIMEOUT_MS);
   }
   
   public void simulationInit() {

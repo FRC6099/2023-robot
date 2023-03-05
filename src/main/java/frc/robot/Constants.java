@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.model.ArmPosition;
 import frc.robot.model.ClawPosition;
 
@@ -74,9 +76,24 @@ public final class Constants {
   public static final boolean ARM_LOGGING = true;
 
   /*** Claw Positions ***/
-  public static final ClawPosition STARTING_CLAW_POSITION = ClawPosition.CONE;
+  private static SendableChooser<ClawPosition> clawPositions = new SendableChooser<>();
+  public static ClawPosition getStartingClawPosition() {
+    ClawPosition selected = clawPositions.getSelected();
+    if (selected == null) {
+      return ClawPosition.CONE;
+    }
+    return selected;
+  }
 
   /*** Leveler ***/
   public static final double LEVELER_ROLL_VARIANCE = 2.0;
   public static final double LEVELER_PITCH_VARIANCE = 2.0;
+
+  public static void initDashboard() {
+    clawPositions.setDefaultOption(ClawPosition.CONE.name(), ClawPosition.CONE);
+    for (ClawPosition pos : ClawPosition.values()) {
+      clawPositions.addOption(pos.name(), pos);
+    }
+    SmartDashboard.putData("Starting Claw Position", clawPositions);
+  }
 }

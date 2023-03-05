@@ -60,6 +60,7 @@ public class RobotContainer {
     configureBindings();
     configureSubsystems();
     configureAutonomousModes();
+    Constants.initDashboard();
   }
 
   /**
@@ -135,5 +136,9 @@ public class RobotContainer {
   public void simulationPeriodic() {
     arm.simulationPeriodic();
     claw.simulationPeriodic();
+  }
+
+  public void autonomousInit() {
+    claw.initSensorPosition();
   }
 }
