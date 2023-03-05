@@ -106,23 +106,28 @@ public class Claw extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void goToPosition(ClawPosition position) {
+  public boolean goToPosition(ClawPosition position) {
     switch(position) {
       case OPEN: 
-        setAngle(OPENED_CLAW_ANGLE);
-        break;
+        return setAngle(OPENED_CLAW_ANGLE);
       case CONE:
-        setAngle(CONE_CLOSED_CLAW_ANGLE);
-        break;
+        return setAngle(CONE_CLOSED_CLAW_ANGLE);
       case CUBE:
       case CLOSED:
-        setAngle(CUBE_CLOSED_CLAW_ANGLE);
-        break;
+        return setAngle(CUBE_CLOSED_CLAW_ANGLE);
     }
+    return true;
   }
 
-  private void setAngle(double angle) {
+  private boolean setAngle(double angle) {
     double motorTicks = angle * MOTOR_TICKS_PER_DEGREE;
     clawMotor.set(ControlMode.MotionMagic, motorTicks);
+    double currentPosition = clawMotor.getSelectedSensorPosition();
+    double offset = Math.abs(motorTicks - currentPosition);
+    return offset <= 1.0;
+  }
+
+  public void stop() {
+    clawMotor.set(ControlMode.PercentOutput, 0.0);
   }
 }
