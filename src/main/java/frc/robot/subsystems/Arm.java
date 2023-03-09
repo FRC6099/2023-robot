@@ -123,16 +123,31 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean goToPosition(ArmPosition targetPosition) {
-    ArmAngles targetAngles = getArmAngles(targetPosition);
-    ArmPosition currentPosition = getCurrentPosition();
-    System.out.println(currentPosition.getX() + "|" + currentPosition.getY() + "|" + targetPosition.getX() + "|" + targetPosition.getY() + "|" + targetAngles.getLowerAngle() + "|" + targetAngles.getLowerAngle());
-    setArmAngles(targetAngles);
-    return withinThreshold(currentPosition, targetPosition);
+    ArmPosition position = getCurrentPosition();
+    double startX = position.getX();
+    double startY = position.getY();
+    double moveX = getLimitedValue(targetPosition.getX() - startX, 10.0);
+    double moveY = getLimitedValue(targetPosition.getY() - startY, 10.0);
+    // Check Boundaries & Adjust X, Y to min or max depending
+    updatePositionToNext(moveX, moveY, position);
+
+    // Calculate Arm Angles
+    ArmAngles angles = getArmAngles(position);
+    printStats(position, startX, startY, angles);
+
+    // Set Angles
+    setArmAngles(angles);
+    return withinThreshold(startX, startY, targetPosition.getX(), targetPosition.getY());
   }
 
-  private boolean withinThreshold(ArmPosition current, ArmPosition target) {
-    double offsetX = Math.abs(target.getX() - current.getX());
-    double offsetY = Math.abs(target.getY() - current.getY());
+  private double getLimitedValue(double value, double limit) {
+    double absLimit = Math.abs(limit);
+    return Math.max(Math.min(value, absLimit), -absLimit);
+  }
+  
+  private boolean withinThreshold(double currentX, double currentY, double targetX, double targetY) {
+    double offsetX = Math.abs(targetX - currentX);
+    double offsetY = Math.abs(targetY - currentY);
     return offsetX < 0.5 && offsetY < 0.5;
   }
 
@@ -169,9 +184,9 @@ public class Arm extends SubsystemBase {
     return new ArmPosition(lengthX, lengthY, new ArmAngles(lowerArmAngle, upperArmAngle));
   }
 
-  private void updatePositionToNext(double x, double y, ArmPosition position) {
-    double startX = position.getX();
-    double startY = position.getY();
+  private void updatePositionToNext(double x, double y, ArmPosition currentPosition) {
+    double startX = currentPosition.getX();
+    double startY = currentPosition.getY();
 
     if (isStopped) {
       isStopped = false;
@@ -179,17 +194,25 @@ public class Arm extends SubsystemBase {
       lastSetYPosition = startY;
     }
 
-    if (Math.abs(lastSetXPosition - startX) < 3.0 && x!=0.0) {
-      position.addX(x);
-      lastSetXPosition = position.getX();
+    if (
+      Math.abs(lastSetXPosition - startX) < 3.0 && 
+      Math.abs(lastSetYPosition - startY) < 3.0
+    ) {
+      if (x == 0) {
+        currentPosition.setX(lastSetXPosition);
+      } else {
+        currentPosition.addX(x);
+        lastSetXPosition = currentPosition.getX();
+      }
+      if (y == 0) {
+        currentPosition.setY(lastSetYPosition);
+      } else {
+        currentPosition.addY(y);
+        lastSetYPosition = currentPosition.getY();
+      }
     } else {
-      position.setX(lastSetXPosition);
-    }
-    if (Math.abs(lastSetYPosition - startY) < 3.0 && y!=0.0) {
-      position.addY(y);
-      lastSetYPosition = position.getY();
-    } else {
-      position.setY(lastSetYPosition);
+      currentPosition.setX(lastSetXPosition);
+      currentPosition.setY(lastSetYPosition);
     }
   }
   
