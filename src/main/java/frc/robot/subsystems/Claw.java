@@ -128,7 +128,7 @@ public class Claw extends SubsystemBase {
     clawMotor.set(ControlMode.MotionMagic, motorTicks);
     double currentPosition = clawMotor.getSelectedSensorPosition();
     double offset = Math.abs(motorTicks - currentPosition);
-    return offset <= 1.0;
+    return offset <= 5.0;
   }
 
   public void stop() {
