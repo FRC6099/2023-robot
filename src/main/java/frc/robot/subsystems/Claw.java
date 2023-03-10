@@ -20,8 +20,9 @@ public class Claw extends SubsystemBase {
   private static int TIMEOUT_MS = 30;
   private static int GAIN_PID = 0;
   private static int PID_LOOP_INDEX = 0;
-  private static double CLAW_TICKS_PER_REVOLUTION = 4096;
-  private static double MOTOR_TICKS_PER_DEGREE = CLAW_TICKS_PER_REVOLUTION / 360.0;
+  private static double CLAW_TICKS_PER_REVOLUTION = 4096.0;
+  private static double ENCODER_TO_CLAW_RATIO = 60.0 / 18.0;
+  private static double MOTOR_TICKS_PER_DEGREE = CLAW_TICKS_PER_REVOLUTION / 360.0 * ENCODER_TO_CLAW_RATIO;
 
   private static final double OPENED_CLAW_ANGLE = 35.0;       // In Degrees (start position)
   private static final double CUBE_CLOSED_CLAW_ANGLE = 20.0;  // In Degrees
