@@ -17,6 +17,10 @@ import frc.robot.model.ArmPosition;
 import frc.robot.sim.PhysicsSim;
 
 public class Arm extends SubsystemBase {
+  // Inside robot -> Outside robot
+  // 475,500 -> 481,250 lower arm
+  // 81,000 -> 93,000 upper arm
+    // 18.588905112539916|-0.08043777812625565|101.49996093750146|24.58186523437501
 
   private static int TIMEOUT_MS = 30;
   private static int GAIN_PID = 0;
@@ -37,11 +41,11 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-    this.configureArm(lowerArm, Constants.START_LOWER_ARM_DEGREES, LOWER_MOTOR_REV_TO_ARM_REV, true);
-    this.configureArm(upperArm, Constants.START_UPPER_ARM_DEGREES, UPPER_MOTOR_REV_TO_ARM_REV, true);
+    this.configureArm(lowerArm, Constants.START_LOWER_ARM_DEGREES, LOWER_MOTOR_REV_TO_ARM_REV, true, 2000, 400);
+    this.configureArm(upperArm, Constants.START_UPPER_ARM_DEGREES, UPPER_MOTOR_REV_TO_ARM_REV, true, 4000, 800);
   }
 
-  private void configureArm(TalonSRX arm, double angle, double turnRatio, boolean sensorPhase) {
+  private void configureArm(TalonSRX arm, double angle, double turnRatio, boolean sensorPhase, double cruiseVelocity, double accel) {
     /* Factory default hardware to prevent unexpected behavior */
 		arm.configFactoryDefault();
 
@@ -78,8 +82,8 @@ public class Arm extends SubsystemBase {
 		arm.config_kD(GAIN_PID, 0.0, TIMEOUT_MS);
 
 		/* Set acceleration and vcruise velocity - see documentation */
-		arm.configMotionCruiseVelocity(4740, TIMEOUT_MS);                  // SET THIS FOR MAX MOTOR SPEED
-		arm.configMotionAcceleration(200, TIMEOUT_MS);            // SET THIS FOR MAX MOTOR ACCELERATION
+		arm.configMotionCruiseVelocity(cruiseVelocity, TIMEOUT_MS);                  // SET THIS FOR MAX MOTOR SPEED
+		arm.configMotionAcceleration(accel, TIMEOUT_MS);            // SET THIS FOR MAX MOTOR ACCELERATION
 
 		/* Zero the sensor once on robot boot up */
     double angleTicks = angle * ARM_TICKS_PER_REVOLUTION / 360.0 * turnRatio;
@@ -104,6 +108,10 @@ public class Arm extends SubsystemBase {
 
   public void moveLowerArm(double speed) {
     lowerArm.set(ControlMode.PercentOutput, -speed);
+
+    ArmPosition pos = getCurrentPosition();
+    ArmAngles angle = getArmAngles(pos);
+    System.out.println(pos.getX() + "|" + pos.getY() + "|" + angle.getLowerAngle() + "|" + angle.getUpperAngle());
   }
 
   public void moveUpperArm(double speed) {
