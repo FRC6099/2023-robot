@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.controllers.OperateArmController;
 import frc.robot.subsystems.Arm;
 
@@ -37,8 +38,18 @@ public class OperateArm extends CommandBase {
     if (changeInX == 0 && changeInY == 0) {
       arm.stop();
     } else {
-      arm.addPosition(changeInX*10.0, changeInY*10.0);
+      moveArm(changeInX, changeInY);
     }
+  }
+
+  private void moveArm(double x, double y) {
+    if (Constants.isArmSingleAxisControl()) {
+      arm.moveLowerArm(x);
+      arm.moveUpperArm(y);
+    } else {
+      arm.addPosition(x*10.0, y*10.0);
+    }
+    
   }
 
   // Called once the command ends or is interrupted.

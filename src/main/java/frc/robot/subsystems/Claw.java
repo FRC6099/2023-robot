@@ -112,6 +112,31 @@ public class Claw extends SubsystemBase {
   }
 
   public boolean goToPosition(ClawPosition position) {
+    if (Constants.isClawSingleAxisControl()) {
+      moveClaw(position);
+    } else {
+      return setAngle(position);
+    }
+    return false;
+  }
+
+  public void moveClaw(ClawPosition position) {
+    switch(position) {
+      case OPEN: 
+      case CUBE:
+        moveClaw(-0.5);
+        break;
+      case CONE:
+      case CLOSED:
+        moveClaw(0.5);
+    }
+  }
+
+  public void moveClaw(double speed) {
+    clawMotor.set(ControlMode.PercentOutput, speed);
+  }
+
+  private boolean setAngle(ClawPosition position) {
     switch(position) {
       case OPEN: 
         return setAngle(OPENED_CLAW_ANGLE);

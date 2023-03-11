@@ -102,6 +102,14 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+  public void moveLowerArm(double speed) {
+    lowerArm.set(ControlMode.PercentOutput, speed);
+  }
+
+  public void moveUpperArm(double speed) {
+    upperArm.set(ControlMode.PercentOutput, speed);
+  }
+
   public void addPosition(double x, double y) {
     // GET current X and Y
     ArmPosition position = getCurrentPosition();

@@ -89,11 +89,24 @@ public final class Constants {
   public static final double LEVELER_ROLL_VARIANCE = 2.0;
   public static final double LEVELER_PITCH_VARIANCE = 2.0;
 
+
+  /*** Dashboard ***/
   public static void initDashboard() {
     clawPositions.setDefaultOption(ClawPosition.CONE.name(), ClawPosition.CONE);
     for (ClawPosition pos : ClawPosition.values()) {
       clawPositions.addOption(pos.name(), pos);
     }
     SmartDashboard.putData("Starting Claw Position", clawPositions);
+
+    SmartDashboard.putBoolean("Arm Single Axis Control", false);
+    SmartDashboard.putBoolean("Claw Single Axis Control", false);
+  }
+
+  public static boolean isArmSingleAxisControl() {
+    return SmartDashboard.getBoolean("Arm Single Axis Control", false);
+  }
+
+  public static boolean isClawSingleAxisControl() {
+    return SmartDashboard.getBoolean("Claw Single Axis Control", false);
   }
 }

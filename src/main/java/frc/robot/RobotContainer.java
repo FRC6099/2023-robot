@@ -99,9 +99,15 @@ public class RobotContainer {
     xboxController.x().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.FAR_DROP_POSITION), arm));
 
     // CLAW COMMANDS
-    xboxController.leftTrigger().whileTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.OPEN), claw));
-    xboxController.leftBumper().whileTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.CUBE), claw));
-    xboxController.rightBumper().whileTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.CONE), claw));
+    xboxController.leftTrigger()
+      .onTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.OPEN), claw))
+      .onFalse(new RunCommand(() -> claw.stop(), claw));
+    xboxController.leftBumper()
+      .onTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.CUBE), claw))
+      .onFalse(new RunCommand(() -> claw.stop(), claw));
+    xboxController.rightBumper()
+      .onTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.CONE), claw))
+      .onFalse(new RunCommand(() -> claw.stop(), claw));
 
     // LEVELER COMMANDS
     leftJoystick.button(Constants.LEVELER_BUTTON_ID).whileTrue(new LevelRobot(leveler, driveTrain));
