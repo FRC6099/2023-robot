@@ -112,7 +112,7 @@ public class Claw extends SubsystemBase {
   }
 
   public boolean goToPosition(ClawPosition position) {
-    if (Constants.isClawSingleAxisControl()) {
+    if (Constants.isClawSpeedControlled()) {
       moveClaw(position);
     } else {
       return setAngle(position);
