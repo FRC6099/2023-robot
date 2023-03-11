@@ -101,15 +101,15 @@ public final class Constants {
       clawPositions.addOption(pos.name(), pos);
     }
     SmartDashboard.putData(STARTING_CLAW_POSITION_KEY, clawPositions);
-    SmartDashboard.putBoolean(ARM_SINGLE_AXIS_CONTROLLED_KEY, false);
-    SmartDashboard.putBoolean(CLAW_SPEED_CONTROLLED_KEY, false);
+    SmartDashboard.putBoolean(ARM_SINGLE_AXIS_CONTROLLED_KEY, true);
+    SmartDashboard.putBoolean(CLAW_SPEED_CONTROLLED_KEY, true);
   }
 
   public static boolean isArmSingleAxisControl() {
-    return SmartDashboard.getBoolean(ARM_SINGLE_AXIS_CONTROLLED_KEY, false);
+    return SmartDashboard.getBoolean(ARM_SINGLE_AXIS_CONTROLLED_KEY, true);
   }
 
   public static boolean isClawSpeedControlled() {
-    return SmartDashboard.getBoolean(CLAW_SPEED_CONTROLLED_KEY, false);
+    return SmartDashboard.getBoolean(CLAW_SPEED_CONTROLLED_KEY, true);
   }
 }
