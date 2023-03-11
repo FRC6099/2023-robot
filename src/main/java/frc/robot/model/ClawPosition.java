@@ -4,10 +4,19 @@
 
 package frc.robot.model;
 
+import java.util.Arrays;
+
 /** Add your docs here. */
 public enum ClawPosition {
     OPEN,
     CUBE,
     CONE,
-    CLOSED
+    CLOSED;
+
+    public static String[] valuesAsString() {
+        return Arrays.asList(values())
+                .stream()
+                .map(it -> it.name())
+                .toArray(String[]::new);
+    }
 }

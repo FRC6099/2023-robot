@@ -8,22 +8,22 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
 
-public class Reverse extends CommandBase {
+public class Forward extends CommandBase {
 
   private final DriveTrain driveTrain;
   private final double duration;
   private final Timer timer;
 
-  public Reverse(DriveTrain driveTrain) {
+  public Forward(DriveTrain driveTrain) {
     this(driveTrain, 5.0);
   }
 
-  public Reverse(DriveTrain driveTrain, double duration) {
+  public Forward(DriveTrain driveTrain, double duration) {
     this(driveTrain, duration, new Timer());
   }
 
   /** Creates a new Reverse. */
-  public Reverse(DriveTrain driveTrain, double duration, Timer timer) {
+  public Forward(DriveTrain driveTrain, double duration, Timer timer) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.driveTrain = driveTrain;
     this.duration = duration;
@@ -34,11 +34,11 @@ public class Reverse extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveTrain.moveLeftMotors(-0.5);
-    driveTrain.moveRightMotors(-0.505);
+    driveTrain.moveLeftMotors(0.5);
+    driveTrain.moveRightMotors(0.505);
     timer.reset();
     timer.start();
-    System.out.println("** Moving in Reverse");
+    System.out.println("** Moving Forward");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -49,7 +49,7 @@ public class Reverse extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     timer.stop();
-    System.out.println("** Moving in Reverse Complete");
+    System.out.println("** Moving Forward Complete");
   }
 
   // Returns true when the command should end.

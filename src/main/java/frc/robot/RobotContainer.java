@@ -9,6 +9,7 @@ import frc.robot.commands.LevelRobot;
 import frc.robot.commands.OperateArm;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.autonomous.BackupCommandSequence;
+import frc.robot.commands.autonomous.ChargeCommandSequence;
 import frc.robot.controllers.OperateArmController;
 import frc.robot.controllers.TankDriveController;
 import frc.robot.model.ClawPosition;
@@ -59,6 +60,7 @@ public class RobotContainer {
     configureBindings();
     configureSubsystems();
     configureAutonomousModes();
+    Constants.initDashboard();
   }
 
   /**
@@ -75,6 +77,7 @@ public class RobotContainer {
 
   private void configureAutonomousModes() {
     this.autonomousChooser.setDefaultOption("Reverse", new BackupCommandSequence(driveTrain));
+    this.autonomousChooser.setDefaultOption("Charge Station", new ChargeCommandSequence(arm, claw, driveTrain, leveler, handbrake));
     this.autonomousChooser.addOption("Do nothing", new WaitCommand(10.0));
     SmartDashboard.putData(this.autonomousChooser);
   }
@@ -133,5 +136,9 @@ public class RobotContainer {
   public void simulationPeriodic() {
     arm.simulationPeriodic();
     claw.simulationPeriodic();
+  }
+
+  public void autonomousInit() {
+    claw.initSensorPosition();
   }
 }
