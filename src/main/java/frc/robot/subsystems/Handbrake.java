@@ -55,6 +55,7 @@ public class Handbrake extends SubsystemBase {
   }
 
   public void engage() {
+    System.out.println("Engaging: isEngaging " + isEngaging + "; isEngaged " + isEngaged);
     if (!isEngaging && !isEngaged) {
       isEngaging = true;
       isReleasing = false;
@@ -64,6 +65,7 @@ public class Handbrake extends SubsystemBase {
   }
 
   public void release() {
+    System.out.println("Releasing: isReleasing " + isReleasing + "; isEngaged " + isEngaged);
     if (!isReleasing && isEngaged) {
       isReleasing = true;
       isEngaging = false;

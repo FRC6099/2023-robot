@@ -113,12 +113,12 @@ public class RobotContainer {
     leftJoystick.button(Constants.LEVELER_BUTTON_ID).whileTrue(new LevelRobot(leveler, driveTrain));
 
     // HANDBRAKE COMMANDS
-    rightJoystick.button(Constants.HANDBRAKE_ENGAGE_BUTTON_ID).whileTrue(new RunCommand(() -> { 
+    rightJoystick.button(Constants.HANDBRAKE_ENGAGE_BUTTON_ID).onTrue(new RunCommand(() -> { 
       tankDrive.disable();
       driveTrain.stop(); 
       handbrake.engage();
     }, handbrake, driveTrain));
-    leftJoystick.button(Constants.HANDBRAKE_RELEASE_BUTTON_ID).whileTrue(new RunCommand(() -> {
+    leftJoystick.button(Constants.HANDBRAKE_RELEASE_BUTTON_ID).onTrue(new RunCommand(() -> {
       handbrake.release();
       tankDrive.enable();
     }, handbrake));

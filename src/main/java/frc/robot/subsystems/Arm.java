@@ -37,11 +37,11 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-    this.configureArm(lowerArm, Constants.START_LOWER_ARM_DEGREES, LOWER_MOTOR_REV_TO_ARM_REV);
-    this.configureArm(upperArm, Constants.START_UPPER_ARM_DEGREES, UPPER_MOTOR_REV_TO_ARM_REV);
+    this.configureArm(lowerArm, Constants.START_LOWER_ARM_DEGREES, LOWER_MOTOR_REV_TO_ARM_REV, true);
+    this.configureArm(upperArm, Constants.START_UPPER_ARM_DEGREES, UPPER_MOTOR_REV_TO_ARM_REV, true);
   }
 
-  private void configureArm(TalonSRX arm, double angle, double turnRatio) {
+  private void configureArm(TalonSRX arm, double angle, double turnRatio, boolean sensorPhase) {
     /* Factory default hardware to prevent unexpected behavior */
 		arm.configFactoryDefault();
 
@@ -57,7 +57,7 @@ public class Arm extends SubsystemBase {
 		 * have green LEDs when driving Talon Forward / Requesting Postiive Output Phase
 		 * sensor to have positive increment when driving Talon Forward (Green LED)
 		 */
-		arm.setSensorPhase(false);
+		arm.setSensorPhase(sensorPhase);
 		arm.setInverted(false);
 
 		/* Set relevant frame periods to be at least as fast as periodic rate */
@@ -78,8 +78,8 @@ public class Arm extends SubsystemBase {
 		arm.config_kD(GAIN_PID, 0.0, TIMEOUT_MS);
 
 		/* Set acceleration and vcruise velocity - see documentation */
-		arm.configMotionCruiseVelocity(4740 * 30, TIMEOUT_MS);                  // SET THIS FOR MAX MOTOR SPEED
-		arm.configMotionAcceleration(4096, TIMEOUT_MS);            // SET THIS FOR MAX MOTOR ACCELERATION
+		arm.configMotionCruiseVelocity(4740, TIMEOUT_MS);                  // SET THIS FOR MAX MOTOR SPEED
+		arm.configMotionAcceleration(200, TIMEOUT_MS);            // SET THIS FOR MAX MOTOR ACCELERATION
 
 		/* Zero the sensor once on robot boot up */
     double angleTicks = angle * ARM_TICKS_PER_REVOLUTION / 360.0 * turnRatio;
@@ -103,7 +103,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void moveLowerArm(double speed) {
-    lowerArm.set(ControlMode.PercentOutput, speed);
+    lowerArm.set(ControlMode.PercentOutput, -speed);
   }
 
   public void moveUpperArm(double speed) {

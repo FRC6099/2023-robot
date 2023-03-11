@@ -44,8 +44,8 @@ public class OperateArm extends CommandBase {
 
   private void moveArm(double x, double y) {
     if (Constants.isArmSingleAxisControl()) {
-      arm.moveLowerArm(x);
-      arm.moveUpperArm(y);
+      arm.moveLowerArm(x * 0.5);
+      arm.moveUpperArm(y * 0.5);
     } else {
       arm.addPosition(x*10.0, y*10.0);
     }
