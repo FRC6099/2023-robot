@@ -10,6 +10,9 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.model.ArmAngles;
@@ -34,6 +37,10 @@ public class Arm extends SubsystemBase {
 
   private final TalonSRX lowerArm = new WPI_TalonSRX(Constants.LOWER_ARM_MOTOR_CAN_ID);
   private final TalonSRX upperArm = new WPI_TalonSRX(Constants.UPPER_ARM_MOTOR_CAN_ID);
+  private final DigitalInput lowerArmMaxLimit = new DigitalInput(Constants.LOWER_ARM_MAX_LIMIT_SWITCH_ID);
+  private final DigitalInput lowerArmMinLimit = new DigitalInput(Constants.LOWER_ARM_MIN_LIMIT_SWITCH_ID);
+  private final DigitalInput upperArmMinLimit = new DigitalInput(Constants.UPPER_ARM_LIMIT_SWITCH_ID);
+  private final AnalogPotentiometer upperArmAngleSensor;
 
   private double lastSetXPosition = -1.0;
   private double lastSetYPosition = -1.0;
@@ -44,6 +51,9 @@ public class Arm extends SubsystemBase {
   public Arm() {
     this.configureArm(lowerArm, Constants.START_LOWER_ARM_DEGREES, LOWER_MOTOR_REV_TO_ARM_REV, true, 592, 400);
     this.configureArm(upperArm, Constants.START_UPPER_ARM_DEGREES, UPPER_MOTOR_REV_TO_ARM_REV, true, 888, 800);
+    AnalogInput sensor = new AnalogInput(Constants.ARM_MAX_ANGLE_POTENTIOMETER_ID);
+    sensor.setAverageBits(2);
+    upperArmAngleSensor = new AnalogPotentiometer(sensor, 180, 0);
   }
 
   private void configureArm(TalonSRX arm, double angle, double turnRatio, boolean sensorPhase, double cruiseVelocity, double accel) {
@@ -108,6 +118,11 @@ public class Arm extends SubsystemBase {
   }
 
   public void moveLowerArm(double speed) {
+    if ((lowerArmMaxLimit.get() && speed < 0) || 
+      (lowerArmMinLimit.get() && speed > 0)
+    ) {
+        return;
+    }
     lowerArm.set(ControlMode.PercentOutput, -speed);
 
     ArmPosition pos = getCurrentPosition();
@@ -116,6 +131,12 @@ public class Arm extends SubsystemBase {
   }
 
   public void moveUpperArm(double speed) {
+    if ((upperArmMinLimit.get() && speed < 0) ||
+      (upperArmAngleSensor.get() * 180 / 5 >= 170.0 && speed > 0)
+    ) {
+      System.out.println("Upper Arm Angle: " + upperArmAngleSensor.get());
+      return;
+    }
     upperArm.set(ControlMode.PercentOutput, speed);
   }
 

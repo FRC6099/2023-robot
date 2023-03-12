@@ -55,6 +55,12 @@ public final class Constants {
   public static final int LEFT_HANDBRAKE_CAN_ID = 9;
 
 
+  /*** DIO IDs ***/
+  public static final int LOWER_ARM_MAX_LIMIT_SWITCH_ID = 0;
+  public static final int LOWER_ARM_MIN_LIMIT_SWITCH_ID = 1;
+  public static final int UPPER_ARM_LIMIT_SWITCH_ID = 2;
+  public static final int ARM_MAX_ANGLE_POTENTIOMETER_ID = 3;
+
   /*** Arm Positions ***/
   // Angles
   public static final double START_LOWER_ARM_DEGREES = 101.5;
