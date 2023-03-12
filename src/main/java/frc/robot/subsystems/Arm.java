@@ -118,26 +118,27 @@ public class Arm extends SubsystemBase {
   }
 
   public void moveLowerArm(double speed) {
-    if ((lowerArmMaxLimit.get() && speed < 0) || 
-      (lowerArmMinLimit.get() && speed > 0)
+    if ((!lowerArmMaxLimit.get() && speed < 0) || 
+      (!lowerArmMinLimit.get() && speed > 0)
     ) {
-        return;
+      lowerArm.set(ControlMode.PercentOutput, 0.0);
+    } else {
+      lowerArm.set(ControlMode.PercentOutput, -speed);
+      ArmPosition pos = getCurrentPosition();
+      ArmAngles angle = getArmAngles(pos);
+      System.out.println(pos.getX() + "|" + pos.getY() + "|" + angle.getLowerAngle() + "|" + angle.getUpperAngle());
     }
-    lowerArm.set(ControlMode.PercentOutput, -speed);
-
-    ArmPosition pos = getCurrentPosition();
-    ArmAngles angle = getArmAngles(pos);
-    System.out.println(pos.getX() + "|" + pos.getY() + "|" + angle.getLowerAngle() + "|" + angle.getUpperAngle());
   }
 
   public void moveUpperArm(double speed) {
-    if ((upperArmMinLimit.get() && speed < 0) ||
+    if ((!upperArmMinLimit.get() && speed < 0) ||
       (upperArmAngleSensor.get() * 180 / 5 >= 170.0 && speed > 0)
     ) {
       System.out.println("Upper Arm Angle: " + upperArmAngleSensor.get());
-      return;
+      upperArm.set(ControlMode.PercentOutput, 0.0);
+    } else {
+      upperArm.set(ControlMode.PercentOutput, speed);
     }
-    upperArm.set(ControlMode.PercentOutput, speed);
   }
 
   public void addPosition(double x, double y) {

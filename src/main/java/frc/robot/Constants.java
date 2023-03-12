@@ -59,7 +59,7 @@ public final class Constants {
   public static final int LOWER_ARM_MAX_LIMIT_SWITCH_ID = 0;
   public static final int LOWER_ARM_MIN_LIMIT_SWITCH_ID = 1;
   public static final int UPPER_ARM_LIMIT_SWITCH_ID = 2;
-  public static final int ARM_MAX_ANGLE_POTENTIOMETER_ID = 3;
+  public static final int ARM_MAX_ANGLE_POTENTIOMETER_ID = 0;
 
   /*** Arm Positions ***/
   // Angles
