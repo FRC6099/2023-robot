@@ -9,7 +9,6 @@ import frc.robot.commands.LevelRobot;
 import frc.robot.commands.OperateArm;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.autonomous.BackupCommandSequence;
-import frc.robot.commands.autonomous.ChargeCommandSequence;
 import frc.robot.controllers.OperateArmController;
 import frc.robot.controllers.TankDriveController;
 import frc.robot.model.ClawPosition;
@@ -43,8 +42,8 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xboxController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
-  private final CommandJoystick leftJoystick = new CommandJoystick(Constants.LEFT_JOYSTICK_USB_ID);
-  private final CommandJoystick rightJoystick = new CommandJoystick(Constants.RIGHT_JOYSTICK_USB_ID);
+  private final CommandJoystick leftJoystick = new CommandJoystick(0);
+  private final CommandJoystick rightJoystick = new CommandJoystick(0);
 
   // Default Commands
   private final OperateArm operateArm = new OperateArm(arm, new OperateArmController(xboxController));
@@ -60,7 +59,6 @@ public class RobotContainer {
     configureBindings();
     configureSubsystems();
     configureAutonomousModes();
-    Constants.initDashboard();
   }
 
   /**
@@ -77,7 +75,6 @@ public class RobotContainer {
 
   private void configureAutonomousModes() {
     this.autonomousChooser.setDefaultOption("Reverse", new BackupCommandSequence(driveTrain));
-    this.autonomousChooser.setDefaultOption("Charge Station", new ChargeCommandSequence(arm, claw, driveTrain, leveler, handbrake));
     this.autonomousChooser.addOption("Do nothing", new WaitCommand(10.0));
     SmartDashboard.putData(this.autonomousChooser);
   }
@@ -99,29 +96,23 @@ public class RobotContainer {
     xboxController.x().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.FAR_DROP_POSITION), arm));
 
     // CLAW COMMANDS
-    xboxController.leftTrigger()
-      .onTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.OPEN), claw))
-      .onFalse(new RunCommand(() -> claw.stop(), claw));
-    xboxController.leftBumper()
-      .onTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.CUBE), claw))
-      .onFalse(new RunCommand(() -> claw.stop(), claw));
-    xboxController.rightBumper()
-      .onTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.CONE), claw))
-      .onFalse(new RunCommand(() -> claw.stop(), claw));
+    xboxController.leftTrigger().whileTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.OPEN), claw));
+    xboxController.leftBumper().whileTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.CUBE), claw));
+    xboxController.rightBumper().whileTrue(new RunCommand(() -> claw.goToPosition(ClawPosition.CONE), claw));
 
     // LEVELER COMMANDS
-    leftJoystick.button(Constants.LEVELER_BUTTON_ID).whileTrue(new LevelRobot(leveler, driveTrain));
+    // leftJoystick.button(Constants.LEVELER_BUTTON_ID).whileTrue(new LevelRobot(leveler, driveTrain));
 
     // HANDBRAKE COMMANDS
-    rightJoystick.button(Constants.HANDBRAKE_ENGAGE_BUTTON_ID).onTrue(new RunCommand(() -> { 
-      tankDrive.disable();
-      driveTrain.stop(); 
-      handbrake.engage();
-    }, handbrake, driveTrain));
-    leftJoystick.button(Constants.HANDBRAKE_RELEASE_BUTTON_ID).onTrue(new RunCommand(() -> {
-      handbrake.release();
-      tankDrive.enable();
-    }, handbrake));
+    // rightJoystick.button(Constants.HANDBRAKE_ENGAGE_BUTTON_ID).whileTrue(new RunCommand(() -> { 
+    //   tankDrive.disable();
+    //   driveTrain.stop(); 
+    //   handbrake.engage();
+    // }, handbrake, driveTrain));
+    // leftJoystick.button(Constants.HANDBRAKE_RELEASE_BUTTON_ID).whileTrue(new RunCommand(() -> {
+    //   handbrake.release();
+    //   tankDrive.enable();
+    // }, handbrake));
   }
 
   /**
@@ -142,9 +133,5 @@ public class RobotContainer {
   public void simulationPeriodic() {
     arm.simulationPeriodic();
     claw.simulationPeriodic();
-  }
-
-  public void autonomousInit() {
-    claw.initSensorPosition();
   }
 }

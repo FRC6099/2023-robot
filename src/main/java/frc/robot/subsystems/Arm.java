@@ -18,6 +18,7 @@ import frc.robot.sim.PhysicsSim;
 
 public class Arm extends SubsystemBase {
   // Inside robot -> Outside robot
+  // ~475,500 -> 481,185
   // 475,500 -> 481,250 lower arm
   // 81,000 -> 93,000 upper arm
     // 18.588905112539916|-0.08043777812625565|101.49996093750146|24.58186523437501
@@ -27,7 +28,7 @@ public class Arm extends SubsystemBase {
   private static int PID_LOOP_INDEX = 0;
   private static double LOWER_ARM_LENGTH = 36.0;           // INCHES
   private static double UPPER_ARM_LENGTH = 43.75;          // INCHES
-  private static double ARM_TICKS_PER_REVOLUTION = 4096;
+  private static double ARM_TICKS_PER_REVOLUTION = 128;    // ~148 Ticks per degree
   private static double LOWER_MOTOR_REV_TO_ARM_REV = 125.0 / 1.0 * 60.0 / 18.0;   // 125:1, 60:18
   private static double UPPER_MOTOR_REV_TO_ARM_REV = 100.0 / 1.0 * 60.0 / 18.0;   // 100:1, 60:18
 
@@ -41,8 +42,8 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-    this.configureArm(lowerArm, Constants.START_LOWER_ARM_DEGREES, LOWER_MOTOR_REV_TO_ARM_REV, true, 2000, 400);
-    this.configureArm(upperArm, Constants.START_UPPER_ARM_DEGREES, UPPER_MOTOR_REV_TO_ARM_REV, true, 4000, 800);
+    this.configureArm(lowerArm, Constants.START_LOWER_ARM_DEGREES, LOWER_MOTOR_REV_TO_ARM_REV, true, 592, 400);
+    this.configureArm(upperArm, Constants.START_UPPER_ARM_DEGREES, UPPER_MOTOR_REV_TO_ARM_REV, true, 888, 800);
   }
 
   private void configureArm(TalonSRX arm, double angle, double turnRatio, boolean sensorPhase, double cruiseVelocity, double accel) {
@@ -86,14 +87,14 @@ public class Arm extends SubsystemBase {
 		arm.configMotionAcceleration(accel, TIMEOUT_MS);            // SET THIS FOR MAX MOTOR ACCELERATION
 
 		/* Zero the sensor once on robot boot up */
-    double angleTicks = angle * ARM_TICKS_PER_REVOLUTION / 360.0 * turnRatio;
+    double angleTicks = angle / 360.0 * ARM_TICKS_PER_REVOLUTION * turnRatio;
 		arm.setSelectedSensorPosition(angleTicks, PID_LOOP_INDEX, TIMEOUT_MS);
   }
 
   public void simulationInit() {
     System.out.print("Simulate Init for Arm");
-    PhysicsSim.getInstance().addTalonSRX(lowerArm, 1.0, 8192, false);
-    PhysicsSim.getInstance().addTalonSRX(upperArm, 1.0, 8192, false);
+    PhysicsSim.getInstance().addTalonSRX(lowerArm, 1.0, 8192, true);
+    PhysicsSim.getInstance().addTalonSRX(upperArm, 1.0, 8192, true);
   }
 
   @Override
@@ -172,8 +173,8 @@ public class Arm extends SubsystemBase {
   }
 
   public void setArmAngles(double lowerDegrees, double upperDegrees) {
-    double lowerTicks = lowerDegrees * ARM_TICKS_PER_REVOLUTION / 360.0 * LOWER_MOTOR_REV_TO_ARM_REV;
-    double upperTicks = upperDegrees * ARM_TICKS_PER_REVOLUTION / 360.0 * UPPER_MOTOR_REV_TO_ARM_REV;
+    double lowerTicks = lowerDegrees / 360.0 * ARM_TICKS_PER_REVOLUTION * LOWER_MOTOR_REV_TO_ARM_REV;
+    double upperTicks = upperDegrees / 360.0 * ARM_TICKS_PER_REVOLUTION * UPPER_MOTOR_REV_TO_ARM_REV;
     lowerArm.set(ControlMode.MotionMagic, lowerTicks);
     upperArm.set(ControlMode.MotionMagic, upperTicks);
   }
