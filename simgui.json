@@ -26,6 +26,11 @@
           "open": true
         }
       },
+      "Talon SRX[7]": {
+        "header": {
+          "open": true
+        }
+      },
       "Talon SRX[7]/Quad Encoder": {
         "header": {
           "open": true

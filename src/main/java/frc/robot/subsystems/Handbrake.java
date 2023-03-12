@@ -5,7 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,8 +17,8 @@ public class Handbrake extends SubsystemBase {
   private static final double WAIT_PERIOD = 1.5;
   private static final String HANDBRAKE = "Handbrake";
 
-  private final WPI_VictorSPX leftHandbrake = new WPI_VictorSPX(Constants.LEFT_HANDBRAKE_CAN_ID);
-  private final WPI_VictorSPX rightHandbrake = new WPI_VictorSPX(Constants.RIGHT_HANDBRAKE_CAN_ID);
+  private final WPI_TalonSRX leftHandbrake = new WPI_TalonSRX(Constants.LEFT_HANDBRAKE_CAN_ID);
+  private final WPI_TalonSRX rightHandbrake = new WPI_TalonSRX(Constants.RIGHT_HANDBRAKE_CAN_ID);
 
   private final Timer timer = new Timer();
 
