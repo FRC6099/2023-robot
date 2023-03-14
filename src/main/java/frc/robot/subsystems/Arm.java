@@ -53,7 +53,7 @@ public class Arm extends SubsystemBase {
     this.configureArm(upperArm, Constants.START_UPPER_ARM_DEGREES, UPPER_MOTOR_REV_TO_ARM_REV, true, 888, 800);
     AnalogInput sensor = new AnalogInput(Constants.ARM_MAX_ANGLE_POTENTIOMETER_ID);
     sensor.setAverageBits(2);
-    upperArmAngleSensor = new AnalogPotentiometer(sensor, 180, 0);
+    upperArmAngleSensor = new AnalogPotentiometer(sensor, 1);
   }
 
   private void configureArm(TalonSRX arm, double angle, double turnRatio, boolean sensorPhase, double cruiseVelocity, double accel) {
@@ -118,6 +118,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void moveLowerArm(double speed) {
+    System.out.println("Lower Min: " + lowerArmMinLimit.get() + "; Max: " + lowerArmMaxLimit.get() + "; Speed: " + speed);
     if ((!lowerArmMaxLimit.get() && speed < 0) || 
       (!lowerArmMinLimit.get() && speed > 0)
     ) {
@@ -126,13 +127,14 @@ public class Arm extends SubsystemBase {
       lowerArm.set(ControlMode.PercentOutput, -speed);
       ArmPosition pos = getCurrentPosition();
       ArmAngles angle = getArmAngles(pos);
-      System.out.println(pos.getX() + "|" + pos.getY() + "|" + angle.getLowerAngle() + "|" + angle.getUpperAngle());
+      //System.out.println(pos.getX() + "|" + pos.getY() + "|" + angle.getLowerAngle() + "|" + angle.getUpperAngle());
     }
   }
 
   public void moveUpperArm(double speed) {
-    if ((!upperArmMinLimit.get() && speed < 0) ||
-      (upperArmAngleSensor.get() * 180 / 5 >= 170.0 && speed > 0)
+    System.out.println("Upper Min: " + upperArmMinLimit.get() + "; Angle: " + upperArmAngleSensor.get() + "; Speed: " + speed);
+    if ((!upperArmMinLimit.get() && speed < 0)// ||
+      //(upperArmAngleSensor.get() * 180 / 5 >= 170.0 && speed > 0)
     ) {
       System.out.println("Upper Arm Angle: " + upperArmAngleSensor.get());
       upperArm.set(ControlMode.PercentOutput, 0.0);

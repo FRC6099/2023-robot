@@ -63,8 +63,8 @@ public final class Constants {
 
   /*** Arm Positions ***/
   // Angles
-  public static final double START_LOWER_ARM_DEGREES = 101.5;
-  public static final double START_UPPER_ARM_DEGREES = 21.5;
+  public static final double START_LOWER_ARM_DEGREES = 96.0;
+  public static final double START_UPPER_ARM_DEGREES = 24.5;
 
   // Boundaries
   public static final double MIN_HORIZONTAL_ARM_REACH = 12.0;       // INCHES
