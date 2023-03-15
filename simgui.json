@@ -46,6 +46,11 @@
           "open": true
         }
       },
+      "Talon SRX[8]": {
+        "header": {
+          "open": true
+        }
+      },
       "Victor SPX[8]": {
         "header": {
           "open": true

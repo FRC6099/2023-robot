@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.model.ClawPosition;
@@ -28,6 +29,8 @@ public class Claw extends SubsystemBase {
   private static final double CUBE_CLOSED_CLAW_ANGLE = 20.0;  // In Degrees
   private static final double CONE_CLOSED_CLAW_ANGLE = 15.0;  // In Degrees
   private final TalonSRX clawMotor = new WPI_TalonSRX(Constants.CLAW_MOTOR_CAN_ID);
+
+  private long counter = 0;
 
   /** Creates a new Claw. */
   public Claw() {
@@ -109,6 +112,10 @@ public class Claw extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (counter++ % 50 == 0) {
+      SmartDashboard.putNumber("Claw Angle", getAngle());
+      SmartDashboard.putNumber("Claw Ticks", clawMotor.getSelectedSensorPosition());
+   }
   }
 
   public boolean goToPosition(ClawPosition position) {
@@ -134,6 +141,10 @@ public class Claw extends SubsystemBase {
 
   public void moveClaw(double speed) {
     clawMotor.set(ControlMode.PercentOutput, speed);
+  }
+
+  private double getAngle() {
+    return clawMotor.getSelectedSensorPosition() / MOTOR_TICKS_PER_DEGREE;
   }
 
   private boolean setAngle(ClawPosition position) {

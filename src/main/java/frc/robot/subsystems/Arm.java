@@ -117,7 +117,7 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (counter++ % 100 == 0) {
+    if (counter++ % 50 == 0) {
        ArmPosition position = getCurrentPosition();
        ArmAngles angles = getArmAngles(position);
        double rawLowerArmTicks = lowerArm.getSelectedSensorPosition(PID_LOOP_INDEX);
@@ -125,6 +125,10 @@ public class Arm extends SubsystemBase {
        SmartDashboard.putString("Arm Position", String.format("X: %.4f, Y: %.4f", position.getX(), position.getY()));
        SmartDashboard.putString("Arm Angles", String.format("Lower Angle: %.4f, Upper Angle: %.4f", angles.getLowerAngle(), angles.getUpperAngle()));
        SmartDashboard.putString("Arm Ticks", "Lower Ticks: " + rawLowerArmTicks + ", Upper Ticks: " + rawUpperArmTicks);
+       SmartDashboard.putBoolean("Arm 1 Max Limit", lowerArmMaxLimit.get());
+       SmartDashboard.putBoolean("Arm 1 Min Limit", lowerArmMinLimit.get());
+       SmartDashboard.putBoolean("Arm 2 Min Limit", upperArmMinLimit.get());
+       SmartDashboard.putNumber("Arm 2 Potentiometer", upperArmAngleSensor.get());
     }
   }
 
