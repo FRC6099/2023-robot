@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.model.ArmAngles;
@@ -45,6 +46,7 @@ public class Arm extends SubsystemBase {
   private double lastSetXPosition = -1.0;
   private double lastSetYPosition = -1.0;
   private boolean isStopped = true;
+  private long counter = 0;
 
 
   /** Creates a new Arm. */
@@ -115,6 +117,15 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (counter++ % 100 == 0) {
+       ArmPosition position = getCurrentPosition();
+       ArmAngles angles = getArmAngles(position);
+       double rawLowerArmTicks = lowerArm.getSelectedSensorPosition(PID_LOOP_INDEX);
+       double rawUpperArmTicks = upperArm.getSelectedSensorPosition(PID_LOOP_INDEX);
+       SmartDashboard.putString("Arm Position", String.format("X: %.4f, Y: %.4f", position.getX(), position.getY()));
+       SmartDashboard.putString("Arm Angles", String.format("Lower Angle: %.4f, Upper Angle: %.4f", angles.getLowerAngle(), angles.getUpperAngle()));
+       SmartDashboard.putString("Arm Ticks", "Lower Ticks: " + rawLowerArmTicks + ", Upper Ticks: " + rawUpperArmTicks);
+    }
   }
 
   public void moveLowerArm(double speed) {
