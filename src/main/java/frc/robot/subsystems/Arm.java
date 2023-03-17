@@ -133,7 +133,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void moveLowerArm(double speed) {
-    System.out.println("Lower Min: " + lowerArmMinLimit.get() + "; Max: " + lowerArmMaxLimit.get() + "; Speed: " + speed);
+    // System.out.println("Lower Min: " + lowerArmMinLimit.get() + "; Max: " + lowerArmMaxLimit.get() + "; Speed: " + speed);
     if ((!lowerArmMaxLimit.get() && speed < 0) || 
       (!lowerArmMinLimit.get() && speed > 0)
     ) {
@@ -147,11 +147,11 @@ public class Arm extends SubsystemBase {
   }
 
   public void moveUpperArm(double speed) {
-    System.out.println("Upper Min: " + upperArmMinLimit.get() + "; Angle: " + upperArmAngleSensor.get() + "; Speed: " + speed);
+    // System.out.println("Upper Min: " + upperArmMinLimit.get() + "; Angle: " + upperArmAngleSensor.get() + "; Speed: " + speed);
     if ((!upperArmMinLimit.get() && speed < 0)// ||
       //(upperArmAngleSensor.get() * 180 / 5 >= 170.0 && speed > 0)
     ) {
-      System.out.println("Upper Arm Angle: " + upperArmAngleSensor.get());
+      // System.out.println("Upper Arm Angle: " + upperArmAngleSensor.get());
       upperArm.set(ControlMode.PercentOutput, 0.0);
     } else {
       upperArm.set(ControlMode.PercentOutput, speed);
