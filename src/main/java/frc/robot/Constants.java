@@ -73,7 +73,7 @@ public final class Constants {
   public static final double MAX_VERTICAL_ARM_REACH = 63.0;         // INCHES (12.15" deducted from 76")
 
   // Go to Positions
-  public static final ArmPosition HOME_ARM_POSITION = new ArmPosition(30.51, 0.98);
+  public static final ArmPosition HOME_ARM_POSITION = new ArmPosition(18.4395, -1.8956);         // TICKS: Lower Ticks: 8537.0, Upper Ticks: 2655.0
   public static final ArmPosition FLOOR_PICKUP_POSITION = new ArmPosition(29.05, 9.33);
   public static final ArmPosition SHELF_PICKUP_POSITION = new ArmPosition(32.51, 31.57);
   public static final ArmPosition NEAR_DROP_POSITION = new ArmPosition(44.3798, 35.0731);

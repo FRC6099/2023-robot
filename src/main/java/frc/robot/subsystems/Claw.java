@@ -131,11 +131,11 @@ public class Claw extends SubsystemBase {
     switch(position) {
       case OPEN: 
       case CUBE:
-        moveClaw(0.5);
+        moveClaw(0.8);
         break;
       case CONE:
       case CLOSED:
-        moveClaw(-0.5);
+        moveClaw(-0.8);
     }
   }
 
