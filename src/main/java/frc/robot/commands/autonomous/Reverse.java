@@ -15,7 +15,7 @@ public class Reverse extends CommandBase {
   private final Timer timer;
 
   public Reverse(DriveTrain driveTrain) {
-    this(driveTrain, 3.0);
+    this(driveTrain, 4.0);
   }
 
   public Reverse(DriveTrain driveTrain, double duration) {

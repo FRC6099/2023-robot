@@ -112,12 +112,12 @@ public final class Constants {
   }
 
   public static boolean isArmSingleAxisControl() {
-    // return SmartDashboard.getBoolean(ARM_SINGLE_AXIS_CONTROLLED_KEY, true);
-    return true;
+    return SmartDashboard.getBoolean(ARM_SINGLE_AXIS_CONTROLLED_KEY, true);
+    // return true;
   }
 
   public static boolean isClawSpeedControlled() {
-    // return SmartDashboard.getBoolean(CLAW_SPEED_CONTROLLED_KEY, true);
-    return true;
+    return SmartDashboard.getBoolean(CLAW_SPEED_CONTROLLED_KEY, true);
+    // return true;
   }
 }
