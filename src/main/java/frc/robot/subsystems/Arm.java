@@ -53,8 +53,8 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-    this.configureArm(lowerArm, Constants.START_LOWER_ARM_DEGREES, LOWER_ARM_TICKS_PER_DEGREE, true, 592, 400);
-    this.configureArm(upperArm, Constants.START_UPPER_ARM_DEGREES, UPPER_ARM_TICKS_PER_DEGREE, true, 888, 800);
+    this.configureArm(lowerArm, Constants.START_LOWER_ARM_DEGREES, LOWER_ARM_TICKS_PER_DEGREE, true, 1000, 1000);
+    this.configureArm(upperArm, Constants.START_UPPER_ARM_DEGREES, UPPER_ARM_TICKS_PER_DEGREE, true, 1500, 1300);
     AnalogInput sensor = new AnalogInput(Constants.ARM_MAX_ANGLE_POTENTIOMETER_ID);
     sensor.setAverageBits(2);
     upperArmAngleSensor = new AnalogPotentiometer(sensor, 1);
@@ -184,8 +184,8 @@ public class Arm extends SubsystemBase {
     ArmPosition position = getCurrentPosition();
     double startX = position.getX();
     double startY = position.getY();
-    double moveX = getLimitedValue(targetPosition.getX() - startX, 10.0);
-    double moveY = getLimitedValue(targetPosition.getY() - startY, 10.0);
+    double moveX = getLimitedValue(targetPosition.getX() - startX, 24.0);
+    double moveY = getLimitedValue(targetPosition.getY() - startY, 24.0);
     // Check Boundaries & Adjust X, Y to min or max depending
     updatePositionToNext(moveX, moveY, position);
 
@@ -253,8 +253,8 @@ public class Arm extends SubsystemBase {
     }
 
     if (
-      Math.abs(lastSetXPosition - startX) < 3.0 && 
-      Math.abs(lastSetYPosition - startY) < 3.0
+      Math.abs(lastSetXPosition - startX) < 15.0 && 
+      Math.abs(lastSetYPosition - startY) < 15.0
     ) {
       if (x == 0) {
         currentPosition.setX(lastSetXPosition);
