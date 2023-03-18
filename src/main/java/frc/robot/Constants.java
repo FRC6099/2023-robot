@@ -76,8 +76,8 @@ public final class Constants {
   public static final ArmPosition HOME_ARM_POSITION = new ArmPosition(30.51, 0.98);
   public static final ArmPosition FLOOR_PICKUP_POSITION = new ArmPosition(29.05, 9.33);
   public static final ArmPosition SHELF_PICKUP_POSITION = new ArmPosition(32.51, 31.57);
-  public static final ArmPosition NEAR_DROP_POSITION = new ArmPosition(49.72, 30.51);
-  public static final ArmPosition FAR_DROP_POSITION = new ArmPosition(65.07, 44.52);
+  public static final ArmPosition NEAR_DROP_POSITION = new ArmPosition(44.3798, 35.0731);
+  public static final ArmPosition FAR_DROP_POSITION = new ArmPosition(67.6903, 25.7351);
 
   public static final boolean ARM_LOGGING = true;
 
