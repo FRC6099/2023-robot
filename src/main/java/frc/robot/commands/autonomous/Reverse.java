@@ -15,7 +15,7 @@ public class Reverse extends CommandBase {
   private final Timer timer;
 
   public Reverse(DriveTrain driveTrain) {
-    this(driveTrain, 5.0);
+    this(driveTrain, 4.0);
   }
 
   public Reverse(DriveTrain driveTrain, double duration) {
@@ -34,8 +34,8 @@ public class Reverse extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveTrain.moveLeftMotors(-0.5);
-    driveTrain.moveRightMotors(-0.505);
+    driveTrain.moveLeftMotors(-0.25);
+    driveTrain.moveRightMotors(-0.26);
     timer.reset();
     timer.start();
     System.out.println("** Moving in Reverse");

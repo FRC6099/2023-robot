@@ -74,9 +74,10 @@ public class RobotContainer {
   }
 
   private void configureAutonomousModes() {
+    // this.autonomousChooser.setDefaultOption("Do nothing", new WaitCommand(10.0));
     this.autonomousChooser.setDefaultOption("Reverse", new BackupCommandSequence(driveTrain));
-    this.autonomousChooser.addOption("Do nothing", new WaitCommand(10.0));
-    SmartDashboard.putData(this.autonomousChooser);
+    SmartDashboard.putData("Autonomous Options", this.autonomousChooser);
+    // SmartDashboard.putNumber("Autonomous Number", 0);
   }
 
   /**
@@ -128,6 +129,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
+    // SmartDashboard.getNumber("Autonomous Number", 0)
+    // switch() {
+
+    // }
     return autonomousChooser.getSelected();
   }
 
