@@ -5,6 +5,7 @@
 package frc.robot.controllers;
 
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.Constants;
 
 public class TankDriveController {
 
@@ -22,6 +23,12 @@ public class TankDriveController {
 
     public double getRightPosition() {
         return rightJoystick.getY() * -1.0;
+    }
+
+    public boolean shouldMicroAdjust() {
+        return 
+            leftJoystick.button(Constants.DRIVETRAIN_MICRO_ADJUSTER_BUTTON_ID).getAsBoolean() ||
+            rightJoystick.button(Constants.DRIVETRAIN_MICRO_ADJUSTER_BUTTON_ID).getAsBoolean();
     }
     
 }

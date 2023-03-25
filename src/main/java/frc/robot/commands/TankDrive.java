@@ -9,6 +9,7 @@ import frc.robot.controllers.TankDriveController;
 import frc.robot.subsystems.DriveTrain;
 
 public class TankDrive extends CommandBase {
+  private static final double MICRO_ADJUSTMENT_FACTOR = 3.0;
   private final DriveTrain driveTrain;
   private final TankDriveController controller;
   private boolean enabled = true;
@@ -32,11 +33,12 @@ public class TankDrive extends CommandBase {
     }
     double left = controller.getLeftPosition();
     double right = controller.getRightPosition();
+    double microAdjustFactor = controller.shouldMicroAdjust() ? MICRO_ADJUSTMENT_FACTOR : 1.0;
     double leftDirection = left > 0.0 ? 1.0 : -1.0;
     double rightDirection = right > 0.0 ? 1.0 : -1.0;
     
-    this.driveTrain.moveLeftMotors(left * left * leftDirection);
-    this.driveTrain.moveRightMotors(right * right * rightDirection);
+    this.driveTrain.moveLeftMotors(left * left * leftDirection / microAdjustFactor);
+    this.driveTrain.moveRightMotors(right * right * rightDirection / microAdjustFactor);
   }
 
   // Called once the command ends or is interrupted.
