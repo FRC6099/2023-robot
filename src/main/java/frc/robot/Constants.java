@@ -99,15 +99,15 @@ public final class Constants {
 
 
   /*** Dashboard ***/
-  private static final String STARTING_CLAW_POSITION_KEY = "Starting Claw Position";
-  private static final String ARM_SINGLE_AXIS_CONTROLLED_KEY = "Arm Single Axis Controlle";
-  private static final String CLAW_SPEED_CONTROLLED_KEY = "Claw Speed Controlled";
+  private static final String STARTING_CLAW_POSITION_KEY = "Start Claw Pos";
+  private static final String ARM_SINGLE_AXIS_CONTROLLED_KEY = "Arm Single Axis";
+  private static final String CLAW_SPEED_CONTROLLED_KEY = "Direct Claw";
 
   public static void initDashboard() {
     clawPositions.setDefaultOption(ClawPosition.CONE.name(), ClawPosition.CONE);
-    for (ClawPosition pos : ClawPosition.values()) {
-      clawPositions.addOption(pos.name(), pos);
-    }
+    clawPositions.addOption(ClawPosition.CLOSED.name(), ClawPosition.CLOSED);
+    clawPositions.addOption(ClawPosition.OPEN.name(), ClawPosition.OPEN);
+    clawPositions.addOption(ClawPosition.CUBE.name(), ClawPosition.CUBE);
     SmartDashboard.putData(STARTING_CLAW_POSITION_KEY, clawPositions);
     SmartDashboard.putBoolean(ARM_SINGLE_AXIS_CONTROLLED_KEY, true);
     SmartDashboard.putBoolean(CLAW_SPEED_CONTROLLED_KEY, true);

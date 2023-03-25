@@ -59,6 +59,7 @@ public class RobotContainer {
     configureBindings();
     configureSubsystems();
     configureAutonomousModes();
+    Constants.initDashboard();
   }
 
   /**
@@ -74,9 +75,9 @@ public class RobotContainer {
   }
 
   private void configureAutonomousModes() {
-    // this.autonomousChooser.setDefaultOption("Do nothing", new WaitCommand(10.0));
-    this.autonomousChooser.setDefaultOption("Reverse", new BackupCommandSequence(driveTrain));
-    SmartDashboard.putData("Autonomous Options", this.autonomousChooser);
+    this.autonomousChooser.setDefaultOption("Do nothing", new WaitCommand(10.0));
+    this.autonomousChooser.addOption("Reverse", new BackupCommandSequence(driveTrain));
+    SmartDashboard.putData("Autonomous", this.autonomousChooser);
     // SmartDashboard.putNumber("Autonomous Number", 0);
   }
 

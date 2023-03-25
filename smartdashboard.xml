@@ -1,0 +1,87 @@
+<xml version="1.0">
+<dashboard>
+	<widget field="Arm Single Axis" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="16" y="137"/>
+	</widget>
+	<widget field="Direct Claw" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="37" y="109"/>
+	</widget>
+	<widget field="Autonomous" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="25" y="38"/>
+		<property name="Use Radio Buttons" value="false"/>
+	</widget>
+	<widget field="Arm 2 Min Limit" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="52" y="488"/>
+		<width>143</width>
+	</widget>
+	<widget field="Arm 1 Min Limit" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="54" y="451"/>
+		<width>141</width>
+	</widget>
+	<widget field="Arm 1 Max Limit" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="56" y="414"/>
+		<width>144</width>
+	</widget>
+	<widget field="Claw Ticks" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="32" y="336"/>
+	</widget>
+	<widget field="Claw Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="33" y="308"/>
+	</widget>
+	<widget field="Arm 2 Potentiometer" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="15" y="278"/>
+		<width>296</width>
+	</widget>
+	<widget field="Arm Ticks" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="26" y="247"/>
+		<width>288</width>
+	</widget>
+	<widget field="Arm Angles" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="22" y="219"/>
+		<width>308</width>
+	</widget>
+	<widget field="Arm Position" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="20" y="187"/>
+		<width>217</width>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="17" y="82"/>
+		<width>106</width>
+		<height>21</height>
+		<property name="Text" value="Arm / Claw Operation"/>
+	</static-widget>
+	<widget field="Handbrake" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="27" y="381"/>
+		<width>276</width>
+		<property name="Color to show when true" value="255.0.0.255"/>
+		<property name="Color to show when false" value="51.204.0.255"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="11" y="23"/>
+		<property name="Text" value="Autonomous Mode"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
+		<location x="7" y="5"/>
+		<width>278</width>
+		<height>10</height>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="347" y="6"/>
+		<width>598</width>
+		<height>538</height>
+		<property name="Camera Choice" value="USB Camera 1"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="944" y="48"/>
+		<width>583</width>
+		<height>448</height>
+		<property name="Camera Choice" value="USB Camera 0"/>
+	</static-widget>
+	<widget field="Start Claw Pos" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="149" y="40"/>
+		<property name="Use Radio Buttons" value="false"/>
+	</widget>
+</dashboard>
+<live-window>
+</live-window>
+</xml>

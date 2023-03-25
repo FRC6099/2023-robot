@@ -163,17 +163,18 @@ public class Arm extends SubsystemBase {
   public void addPosition(double x, double y) {
     // GET current X and Y
     ArmPosition position = getCurrentPosition();
+    ArmAngles currentAngles = getArmAngles(position);
     double startX = position.getX();
     double startY = position.getY();
     // Check Boundaries & Adjust X, Y to min or max depending
     updatePositionToNext(x, y, position);
 
     // Calculate Arm Angles
-    ArmAngles angles = getArmAngles(position);
-    printStats(position, startX, startY, angles);
+    ArmAngles newAngles = getLimitedArmAngles(currentAngles, position);
+    printStats(position, startX, startY, newAngles);
 
     // Set Angles
-    setArmAngles(angles);
+    setArmAngles(newAngles);
   }
 
   public boolean goToPosition(double x, double y) {
@@ -182,6 +183,7 @@ public class Arm extends SubsystemBase {
 
   public boolean goToPosition(ArmPosition targetPosition) {
     ArmPosition position = getCurrentPosition();
+    ArmAngles currentAngles = getArmAngles(position);
     double startX = position.getX();
     double startY = position.getY();
     double moveX = getLimitedValue(targetPosition.getX() - startX, 24.0);
@@ -190,11 +192,11 @@ public class Arm extends SubsystemBase {
     updatePositionToNext(moveX, moveY, position);
 
     // Calculate Arm Angles
-    ArmAngles angles = getArmAngles(position);
-    printStats(position, startX, startY, angles);
+    ArmAngles newAngles = getLimitedArmAngles(currentAngles, position);
+    printStats(position, startX, startY, newAngles);
 
     // Set Angles
-    setArmAngles(angles);
+    setArmAngles(newAngles);
     return withinThreshold(startX, startY, targetPosition.getX(), targetPosition.getY());
   }
 
@@ -301,6 +303,24 @@ public class Arm extends SubsystemBase {
 
     // Angle A, B, C should equal 180
     return new ArmAngles(angleR, angleC);
+  }
+
+  public ArmAngles getLimitedArmAngles(ArmAngles currentAngles, ArmPosition newPosition) {
+    ArmAngles newAngles = getArmAngles(newPosition);
+    double lowerAngle = newAngles.getLowerAngle();
+    if (!lowerArmMaxLimit.get() && currentAngles.getLowerAngle() <= newAngles.getLowerAngle()) {
+      // DON'T MOVE LOWER ARM BACKWARD
+      lowerAngle = currentAngles.getLowerAngle();
+    } else if (!lowerArmMinLimit.get() && currentAngles.getLowerAngle() > newAngles.getLowerAngle()) {
+      // DON'T MOVE LOWER ARM FORWARD
+      lowerAngle = currentAngles.getLowerAngle();
+    }
+    double upperAngle = newAngles.getUpperAngle();
+    if (!upperArmMinLimit.get() && currentAngles.getUpperAngle() >= newAngles.getUpperAngle()) {
+      // DON'T MOVE UPPER ARM DOWN
+      upperAngle = currentAngles.getUpperAngle();
+    }
+    return new ArmAngles(lowerAngle, upperAngle);
   }
 
   private void printStats(ArmPosition pos, double startX, double startY, ArmAngles angles) {

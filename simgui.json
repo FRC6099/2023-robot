@@ -21,42 +21,17 @@
           "open": true
         }
       },
+      "Talon SRX[5]/Quad Encoder": {
+        "header": {
+          "open": true
+        }
+      },
       "Talon SRX[6]/Quad Encoder": {
         "header": {
           "open": true
         }
       },
-      "Talon SRX[7]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon SRX[7]/Quad Encoder": {
-        "header": {
-          "open": true
-        }
-      },
       "Talon SRX[8]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Victor SPX[1]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Victor SPX[2]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Victor SPX[3]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Victor SPX[4]": {
         "header": {
           "open": true
         }
@@ -87,9 +62,11 @@
       "/LiveWindow/Ungrouped/Victor SPX [4]": "Motor Controller",
       "/LiveWindow/Ungrouped/Victor SPX [8]": "Motor Controller",
       "/LiveWindow/Ungrouped/Victor SPX [9]": "Motor Controller",
+      "/SmartDashboard/Autonomous": "String Chooser",
       "/SmartDashboard/Autonomous Options": "String Chooser",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/SendableChooser[1]": "String Chooser",
+      "/SmartDashboard/Start Claw Pos": "String Chooser",
       "/SmartDashboard/Starting Claw Position": "String Chooser"
     }
   }
