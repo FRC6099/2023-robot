@@ -22,10 +22,11 @@ public class DropAndBackupCommandSequence extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new MoveArmToPosition(arm, Constants.FAR_DROP_POSITION),
+      new Forward(driveTrain, 1.0),
       new MoveClawToPosition(claw, ClawPosition.OPEN),
       new ParallelCommandGroup( // Move Arm to Home and Reverse Past Platform in parallel
         new MoveArmToPosition(arm, Constants.HOME_ARM_POSITION), 
-        new Reverse(driveTrain))
+        new Reverse(driveTrain, 5.0))
     );
   }
 }

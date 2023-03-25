@@ -34,8 +34,8 @@ public class Forward extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveTrain.moveLeftMotors(0.5);
-    driveTrain.moveRightMotors(0.505);
+    driveTrain.moveLeftMotors(0.25);
+    driveTrain.moveRightMotors(0.25);
     timer.reset();
     timer.start();
     System.out.println("** Moving Forward");
@@ -49,6 +49,7 @@ public class Forward extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     timer.stop();
+    driveTrain.stop();
     System.out.println("** Moving Forward Complete");
   }
 

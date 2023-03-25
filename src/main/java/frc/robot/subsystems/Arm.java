@@ -54,7 +54,7 @@ public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   public Arm() {
     this.configureArm(lowerArm, Constants.START_LOWER_ARM_DEGREES, LOWER_ARM_TICKS_PER_DEGREE, true, 1000, 1000);
-    this.configureArm(upperArm, Constants.START_UPPER_ARM_DEGREES, UPPER_ARM_TICKS_PER_DEGREE, true, 1500, 1300);
+    this.configureArm(upperArm, Constants.START_UPPER_ARM_DEGREES, UPPER_ARM_TICKS_PER_DEGREE, true, 2500, 1500);
     AnalogInput sensor = new AnalogInput(Constants.ARM_MAX_ANGLE_POTENTIOMETER_ID);
     sensor.setAverageBits(2);
     upperArmAngleSensor = new AnalogPotentiometer(sensor, 1);
@@ -208,7 +208,7 @@ public class Arm extends SubsystemBase {
   private boolean withinThreshold(double currentX, double currentY, double targetX, double targetY) {
     double offsetX = Math.abs(targetX - currentX);
     double offsetY = Math.abs(targetY - currentY);
-    return offsetX < 0.5 && offsetY < 0.5;
+    return offsetX < 4.0 && offsetY < 4.0;
   }
 
   public void setArmAngles(ArmAngles angles) {

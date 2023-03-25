@@ -35,7 +35,7 @@ public class Reverse extends CommandBase {
   @Override
   public void initialize() {
     driveTrain.moveLeftMotors(-0.25);
-    driveTrain.moveRightMotors(-0.26);
+    driveTrain.moveRightMotors(-0.24);
     timer.reset();
     timer.start();
     System.out.println("** Moving in Reverse");
