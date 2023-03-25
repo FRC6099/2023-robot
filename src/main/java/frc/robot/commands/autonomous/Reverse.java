@@ -49,6 +49,7 @@ public class Reverse extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     timer.stop();
+    driveTrain.stop();
     System.out.println("** Moving in Reverse Complete");
   }
 
