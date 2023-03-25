@@ -10,6 +10,10 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.model.ArmAngles;
@@ -28,22 +32,32 @@ public class Arm extends SubsystemBase {
   private static int PID_LOOP_INDEX = 0;
   private static double LOWER_ARM_LENGTH = 36.0;           // INCHES
   private static double UPPER_ARM_LENGTH = 43.75;          // INCHES
-  private static double ARM_TICKS_PER_REVOLUTION = 128;    // ~148 Ticks per degree
-  private static double LOWER_MOTOR_REV_TO_ARM_REV = 125.0 / 1.0 * 60.0 / 18.0;   // 125:1, 60:18
-  private static double UPPER_MOTOR_REV_TO_ARM_REV = 100.0 / 1.0 * 60.0 / 18.0;   // 100:1, 60:18
+  // private static double ARM_TICKS_PER_REVOLUTION = 128;    // ~148 Ticks per degree
+  // private static double LOWER_MOTOR_REV_TO_ARM_REV = 125.0 / 1.0 * 60.0 / 18.0;   // 125:1, 60:18
+  // private static double UPPER_MOTOR_REV_TO_ARM_REV = 100.0 / 1.0 * 60.0 / 18.0;   // 100:1, 60:18
+  private static double LOWER_ARM_TICKS_PER_DEGREE = 4651 / 52.3;
+  private static double UPPER_ARM_TICKS_PER_DEGREE = 4422 / 40.8;
 
   private final TalonSRX lowerArm = new WPI_TalonSRX(Constants.LOWER_ARM_MOTOR_CAN_ID);
   private final TalonSRX upperArm = new WPI_TalonSRX(Constants.UPPER_ARM_MOTOR_CAN_ID);
+  private final DigitalInput lowerArmMaxLimit = new DigitalInput(Constants.LOWER_ARM_MAX_LIMIT_SWITCH_ID);
+  private final DigitalInput lowerArmMinLimit = new DigitalInput(Constants.LOWER_ARM_MIN_LIMIT_SWITCH_ID);
+  private final DigitalInput upperArmMinLimit = new DigitalInput(Constants.UPPER_ARM_LIMIT_SWITCH_ID);
+  private final AnalogPotentiometer upperArmAngleSensor;
 
   private double lastSetXPosition = -1.0;
   private double lastSetYPosition = -1.0;
   private boolean isStopped = true;
+  private long counter = 0;
 
 
   /** Creates a new Arm. */
   public Arm() {
-    this.configureArm(lowerArm, Constants.START_LOWER_ARM_DEGREES, LOWER_MOTOR_REV_TO_ARM_REV, true, 592, 400);
-    this.configureArm(upperArm, Constants.START_UPPER_ARM_DEGREES, UPPER_MOTOR_REV_TO_ARM_REV, true, 888, 800);
+    this.configureArm(lowerArm, Constants.START_LOWER_ARM_DEGREES, LOWER_ARM_TICKS_PER_DEGREE, true, 1000, 1000);
+    this.configureArm(upperArm, Constants.START_UPPER_ARM_DEGREES, UPPER_ARM_TICKS_PER_DEGREE, true, 1500, 1300);
+    AnalogInput sensor = new AnalogInput(Constants.ARM_MAX_ANGLE_POTENTIOMETER_ID);
+    sensor.setAverageBits(2);
+    upperArmAngleSensor = new AnalogPotentiometer(sensor, 1);
   }
 
   private void configureArm(TalonSRX arm, double angle, double turnRatio, boolean sensorPhase, double cruiseVelocity, double accel) {
@@ -87,7 +101,7 @@ public class Arm extends SubsystemBase {
 		arm.configMotionAcceleration(accel, TIMEOUT_MS);            // SET THIS FOR MAX MOTOR ACCELERATION
 
 		/* Zero the sensor once on robot boot up */
-    double angleTicks = angle / 360.0 * ARM_TICKS_PER_REVOLUTION * turnRatio;
+    double angleTicks = angle * turnRatio;
 		arm.setSelectedSensorPosition(angleTicks, PID_LOOP_INDEX, TIMEOUT_MS);
   }
 
@@ -105,18 +119,45 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (counter++ % 50 == 0) {
+       ArmPosition position = getCurrentPosition();
+       ArmAngles angles = getArmAngles(position);
+       double rawLowerArmTicks = lowerArm.getSelectedSensorPosition(PID_LOOP_INDEX);
+       double rawUpperArmTicks = upperArm.getSelectedSensorPosition(PID_LOOP_INDEX);
+       SmartDashboard.putString("Arm Position", String.format("X: %.4f, Y: %.4f", position.getX(), position.getY()));
+       SmartDashboard.putString("Arm Angles", String.format("Lower Angle: %.4f, Upper Angle: %.4f", angles.getLowerAngle(), angles.getUpperAngle()));
+       SmartDashboard.putString("Arm Ticks", "Lower Ticks: " + rawLowerArmTicks + ", Upper Ticks: " + rawUpperArmTicks);
+       SmartDashboard.putBoolean("Arm 1 Max Limit", lowerArmMaxLimit.get());
+       SmartDashboard.putBoolean("Arm 1 Min Limit", lowerArmMinLimit.get());
+       SmartDashboard.putBoolean("Arm 2 Min Limit", upperArmMinLimit.get());
+       SmartDashboard.putNumber("Arm 2 Potentiometer", upperArmAngleSensor.get());
+    }
   }
 
   public void moveLowerArm(double speed) {
-    lowerArm.set(ControlMode.PercentOutput, -speed);
-
-    ArmPosition pos = getCurrentPosition();
-    ArmAngles angle = getArmAngles(pos);
-    System.out.println(pos.getX() + "|" + pos.getY() + "|" + angle.getLowerAngle() + "|" + angle.getUpperAngle());
+    // System.out.println("Lower Min: " + lowerArmMinLimit.get() + "; Max: " + lowerArmMaxLimit.get() + "; Speed: " + speed);
+    if ((!lowerArmMaxLimit.get() && speed < 0) || 
+      (!lowerArmMinLimit.get() && speed > 0)
+    ) {
+      lowerArm.set(ControlMode.PercentOutput, 0.0);
+    } else {
+      lowerArm.set(ControlMode.PercentOutput, -speed);
+      ArmPosition pos = getCurrentPosition();
+      ArmAngles angle = getArmAngles(pos);
+      System.out.println(pos.getX() + "|" + pos.getY() + "|" + angle.getLowerAngle() + "|" + angle.getUpperAngle());
+    }
   }
 
   public void moveUpperArm(double speed) {
-    upperArm.set(ControlMode.PercentOutput, speed);
+    // System.out.println("Upper Min: " + upperArmMinLimit.get() + "; Angle: " + upperArmAngleSensor.get() + "; Speed: " + speed);
+    if ((!upperArmMinLimit.get() && speed < 0)// ||
+      //(upperArmAngleSensor.get() * 180 / 5 >= 170.0 && speed > 0)
+    ) {
+      // System.out.println("Upper Arm Angle: " + upperArmAngleSensor.get());
+      upperArm.set(ControlMode.PercentOutput, 0.0);
+    } else {
+      upperArm.set(ControlMode.PercentOutput, speed);
+    }
   }
 
   public void addPosition(double x, double y) {
@@ -143,8 +184,8 @@ public class Arm extends SubsystemBase {
     ArmPosition position = getCurrentPosition();
     double startX = position.getX();
     double startY = position.getY();
-    double moveX = getLimitedValue(targetPosition.getX() - startX, 10.0);
-    double moveY = getLimitedValue(targetPosition.getY() - startY, 10.0);
+    double moveX = getLimitedValue(targetPosition.getX() - startX, 24.0);
+    double moveY = getLimitedValue(targetPosition.getY() - startY, 24.0);
     // Check Boundaries & Adjust X, Y to min or max depending
     updatePositionToNext(moveX, moveY, position);
 
@@ -173,8 +214,8 @@ public class Arm extends SubsystemBase {
   }
 
   public void setArmAngles(double lowerDegrees, double upperDegrees) {
-    double lowerTicks = lowerDegrees / 360.0 * ARM_TICKS_PER_REVOLUTION * LOWER_MOTOR_REV_TO_ARM_REV;
-    double upperTicks = upperDegrees / 360.0 * ARM_TICKS_PER_REVOLUTION * UPPER_MOTOR_REV_TO_ARM_REV;
+    double lowerTicks = lowerDegrees * LOWER_ARM_TICKS_PER_DEGREE;
+    double upperTicks = upperDegrees * UPPER_ARM_TICKS_PER_DEGREE;
     lowerArm.set(ControlMode.MotionMagic, lowerTicks);
     upperArm.set(ControlMode.MotionMagic, upperTicks);
   }
@@ -186,8 +227,8 @@ public class Arm extends SubsystemBase {
   }
 
   private ArmPosition getCurrentPosition() {
-    double lowerArmAngle = lowerArm.getSelectedSensorPosition(PID_LOOP_INDEX) / ARM_TICKS_PER_REVOLUTION * 360 / LOWER_MOTOR_REV_TO_ARM_REV;
-    double upperArmAngle = upperArm.getSelectedSensorPosition(PID_LOOP_INDEX) / ARM_TICKS_PER_REVOLUTION * 360 / UPPER_MOTOR_REV_TO_ARM_REV;
+    double lowerArmAngle = lowerArm.getSelectedSensorPosition(PID_LOOP_INDEX) / LOWER_ARM_TICKS_PER_DEGREE;
+    double upperArmAngle = upperArm.getSelectedSensorPosition(PID_LOOP_INDEX) / UPPER_ARM_TICKS_PER_DEGREE;
 
     // lengthC = (A^2 + B^2 - 2AB * cos(c))^1/2
     double lengthC = Math.sqrt(Math.pow(LOWER_ARM_LENGTH, 2) + Math.pow(UPPER_ARM_LENGTH, 2) - 2 * LOWER_ARM_LENGTH * UPPER_ARM_LENGTH * Math.cos(Math.toRadians(upperArmAngle)));
@@ -212,8 +253,8 @@ public class Arm extends SubsystemBase {
     }
 
     if (
-      Math.abs(lastSetXPosition - startX) < 3.0 && 
-      Math.abs(lastSetYPosition - startY) < 3.0
+      Math.abs(lastSetXPosition - startX) < 15.0 && 
+      Math.abs(lastSetYPosition - startY) < 15.0
     ) {
       if (x == 0) {
         currentPosition.setX(lastSetXPosition);

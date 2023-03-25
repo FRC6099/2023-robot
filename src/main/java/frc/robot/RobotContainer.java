@@ -74,9 +74,10 @@ public class RobotContainer {
   }
 
   private void configureAutonomousModes() {
+    // this.autonomousChooser.setDefaultOption("Do nothing", new WaitCommand(10.0));
     this.autonomousChooser.setDefaultOption("Reverse", new BackupCommandSequence(driveTrain));
-    this.autonomousChooser.addOption("Do nothing", new WaitCommand(10.0));
-    SmartDashboard.putData(this.autonomousChooser);
+    SmartDashboard.putData("Autonomous Options", this.autonomousChooser);
+    // SmartDashboard.putNumber("Autonomous Number", 0);
   }
 
   /**
@@ -92,8 +93,8 @@ public class RobotContainer {
     // ARM COMMANDS
     // xboxController.a().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.FLOOR_PICKUP_POSITION), arm));
     // xboxController.y().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.SHELF_PICKUP_POSITION), arm));
-    // xboxController.b().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.NEAR_DROP_POSITION), arm));
-    // xboxController.x().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.FAR_DROP_POSITION), arm));
+    xboxController.b().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.NEAR_DROP_POSITION), arm));
+    xboxController.x().whileTrue(new RunCommand(() -> arm.goToPosition(Constants.FAR_DROP_POSITION), arm));
 
     // CLAW COMMANDS
     xboxController.leftTrigger()
@@ -128,6 +129,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
+    // SmartDashboard.getNumber("Autonomous Number", 0)
+    // switch() {
+
+    // }
     return autonomousChooser.getSelected();
   }
 

@@ -55,10 +55,16 @@ public final class Constants {
   public static final int LEFT_HANDBRAKE_CAN_ID = 9;
 
 
+  /*** DIO IDs ***/
+  public static final int LOWER_ARM_MAX_LIMIT_SWITCH_ID = 0;
+  public static final int LOWER_ARM_MIN_LIMIT_SWITCH_ID = 1;
+  public static final int UPPER_ARM_LIMIT_SWITCH_ID = 2;
+  public static final int ARM_MAX_ANGLE_POTENTIOMETER_ID = 0;
+
   /*** Arm Positions ***/
   // Angles
-  public static final double START_LOWER_ARM_DEGREES = 101.5;
-  public static final double START_UPPER_ARM_DEGREES = 21.5;
+  public static final double START_LOWER_ARM_DEGREES = 96.0;
+  public static final double START_UPPER_ARM_DEGREES = 24.5;
 
   // Boundaries
   public static final double MIN_HORIZONTAL_ARM_REACH = 12.0;       // INCHES
@@ -67,11 +73,11 @@ public final class Constants {
   public static final double MAX_VERTICAL_ARM_REACH = 63.0;         // INCHES (12.15" deducted from 76")
 
   // Go to Positions
-  public static final ArmPosition HOME_ARM_POSITION = new ArmPosition(30.51, 0.98);
+  public static final ArmPosition HOME_ARM_POSITION = new ArmPosition(18.4395, -1.8956);         // TICKS: Lower Ticks: 8537.0, Upper Ticks: 2655.0
   public static final ArmPosition FLOOR_PICKUP_POSITION = new ArmPosition(29.05, 9.33);
   public static final ArmPosition SHELF_PICKUP_POSITION = new ArmPosition(32.51, 31.57);
-  public static final ArmPosition NEAR_DROP_POSITION = new ArmPosition(49.72, 30.51);
-  public static final ArmPosition FAR_DROP_POSITION = new ArmPosition(65.07, 44.52);
+  public static final ArmPosition NEAR_DROP_POSITION = new ArmPosition(44.3798, 35.0731);    // TICKS: Lower Ticks: 7438.0, Upper Ticks: 10001.0
+  public static final ArmPosition FAR_DROP_POSITION = new ArmPosition(67.6903, 25.7351);     // TICKS: Lower Ticks: 4492.0, Upper Ticks: 13387.0
 
   public static final boolean ARM_LOGGING = true;
 
@@ -107,9 +113,11 @@ public final class Constants {
 
   public static boolean isArmSingleAxisControl() {
     return SmartDashboard.getBoolean(ARM_SINGLE_AXIS_CONTROLLED_KEY, true);
+    // return true;
   }
 
   public static boolean isClawSpeedControlled() {
     return SmartDashboard.getBoolean(CLAW_SPEED_CONTROLLED_KEY, true);
+    // return true;
   }
 }
