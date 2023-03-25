@@ -35,7 +35,7 @@ public class Forward extends CommandBase {
   @Override
   public void initialize() {
     driveTrain.moveLeftMotors(0.25);
-    driveTrain.moveRightMotors(0.25);
+    driveTrain.moveRightMotors(0.23);
     timer.reset();
     timer.start();
     System.out.println("** Moving Forward");

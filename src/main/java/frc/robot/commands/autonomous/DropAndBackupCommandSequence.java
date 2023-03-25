@@ -26,7 +26,7 @@ public class DropAndBackupCommandSequence extends SequentialCommandGroup {
       new MoveClawToPosition(claw, ClawPosition.OPEN),
       new ParallelCommandGroup( // Move Arm to Home and Reverse Past Platform in parallel
         new MoveArmToPosition(arm, Constants.HOME_ARM_POSITION), 
-        new Reverse(driveTrain, 5.25))
+        new Reverse(driveTrain, 5.5))
     );
   }
 }
