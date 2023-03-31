@@ -34,19 +34,17 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     if (Constants.ENABLE_CAMERAS) {
-      UsbCamera camera1 = CameraServer.startAutomaticCapture();
-      UsbCamera camera2 = CameraServer.startAutomaticCapture();
-      camera1.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
-      camera2.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
-      // camera1.setResolution(120, 90);
-      // camera2.setResolution(120, 90);
-      camera1.setVideoMode(PixelFormat.kMJPEG, 120, 90, 15);   
-      camera2.setVideoMode(PixelFormat.kMJPEG, 120, 90, 15);
-      camera1.setExposureManual(40);
-      camera2.setExposureManual(40);
-      camera1.setWhiteBalanceHoldCurrent();
-      camera2.setWhiteBalanceHoldCurrent();
+      // initCamera(0);
+      initCamera(1);
     }
+  }
+
+  private void initCamera(int port) {
+      UsbCamera camera = CameraServer.startAutomaticCapture(port);
+      camera.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
+      camera.setVideoMode(PixelFormat.kMJPEG, 120, 90, 15);
+      camera.setExposureManual(40);
+      camera.setWhiteBalanceHoldCurrent();
   }
 
   /**

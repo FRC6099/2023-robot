@@ -34,7 +34,7 @@ public class Reverse extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveTrain.moveLeftMotors(-0.25);
+    driveTrain.moveLeftMotors(-0.255);
     driveTrain.moveRightMotors(-0.25);
     timer.reset();
     timer.start();
