@@ -14,7 +14,7 @@ import frc.robot.Constants;
 
 public class Handbrake extends SubsystemBase {
 
-  private static final double WAIT_PERIOD = 1.5;
+  private static final double WAIT_PERIOD = 0.5;
   private static final String HANDBRAKE = "Handbrake";
 
   private final WPI_TalonSRX leftHandbrake = new WPI_TalonSRX(Constants.LEFT_HANDBRAKE_CAN_ID);
